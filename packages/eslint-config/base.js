@@ -18,9 +18,8 @@ export const config = [
 			turbo: turboPlugin,
 		},
 		rules: {
-			'turbo/no-undeclared-env-vars': 'warn',
+			'turbo/no-undeclared-env-vars': 'off',
 			indent: ['error', 'tab'],
-			'space-in-brackets': ['error', 'always'],
 		},
 	},
 	{

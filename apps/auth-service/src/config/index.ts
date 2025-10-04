@@ -1,3 +1,2 @@
-export * from './jwt'
-export * from './postgres'
-export * from './typeorm'
+export * from './jwt.config'
+export * from './postgres.config'

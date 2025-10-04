@@ -5,7 +5,6 @@ config();
 
 const configService = new ConfigService();
 
-console.log(process.env.test)
 const AppDataSource = new DataSource({
 	type: 'postgres',
 	host: configService.get<string>('host'),

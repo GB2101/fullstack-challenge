@@ -8,16 +8,17 @@ export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
 	@MessagePattern('auth-register')
-	async register(body: RegisterUser){
-		console.log(`[AUTH SERVICE]: Register request ${body.username}`);
+	async register(data: RegisterUser){
+		console.log(`[AUTH SERVICE]: Register request ${data.username}`);
 
-		await this.authService.create(body);
+		await this.authService.create(data);
 		return { success: true };
 	}
 
 	@MessagePattern('auth-login')
-	async login(body: LoginUser) {
-		console.log(`[AUTH SERVICE]: Login request ${body.username}`);
-		return await this.authService.login(body);
+	async login(data: LoginUser) {
+		console.log(`[AUTH SERVICE]: Login request ${data.username}`);
+		const token = await this.authService.login(data);
+		return { token };
 	}
 }

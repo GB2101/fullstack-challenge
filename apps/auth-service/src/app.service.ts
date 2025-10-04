@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { LoginUser, RegisterUser } from './validations';
 import { RpcException } from '@nestjs/microservices';
+import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt'
+
+import { User } from './entities/user.entity';
+import { LoginUser, RegisterUser } from './validations';
 
 @Injectable()
 export class AuthService {
-	constructor(@InjectRepository(User) private userDB: Repository<User>) {}
+	constructor(
+		@InjectRepository(User) private userDB: Repository<User>,
+		private jwtService: JwtService
+	) {}
 
 	async create(data:RegisterUser) {
 		const username = await this.userDB.existsBy({ username: data.username });
@@ -28,6 +33,6 @@ export class AuthService {
 		const isPasswordValid = await bcrypt.compare(data.password, user.password);
 		if (!isPasswordValid) throw new RpcException('A senha está incorreta');
 
-		return { user: data.username };
+		return this.jwtService.sign({ sub: data.username });
 	}
 }

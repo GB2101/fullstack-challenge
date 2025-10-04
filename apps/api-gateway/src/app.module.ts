@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
 import { AuthController } from './controller/auth/auth.controller';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { SERVICES } from './constants';
+import { SERVICES } from './utils/constants';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { RefreshJwtStrategy } from './strategies/refresh.strategy';
 
 @Module({
 	imports: [
@@ -22,6 +23,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 		]),
 	],
 	controllers: [AppController, AuthController],
-	providers: [AppService, JwtStrategy],
+	providers: [AppService, JwtStrategy, RefreshJwtStrategy],
 })
 export class AppModule {}

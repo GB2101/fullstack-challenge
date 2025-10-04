@@ -1,14 +1,18 @@
-import { Body, Controller, HttpCode, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpException, HttpStatus, Inject, Post, Request, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { SERVICES } from 'src/constants';
 import { LoginUser, RegisterUser } from './validations';
 import { firstValueFrom } from 'rxjs';
-import { Error } from 'src/types';
+
+import { Error, JwtPayload } from 'src/types';
+import { SERVICES } from 'src/utils/constants';
 import { LoginTCP, RegisterTCP } from './types';
+import { RefreshAuthGuard } from 'src/guards/refresh-auth.guard';
+import { RefreshTCP } from './types/Refresh';
 
 @Controller('auth')
 export class AuthController {
 	constructor(@Inject(SERVICES.AUTH) private authClient: ClientProxy) {}
+
 
 	@Post('register')
 	async register(@Body() body: RegisterUser) {
@@ -19,10 +23,11 @@ export class AuthController {
 			return await firstValueFrom(observable);
 		} catch (err) {
 			const error = err as { message: string } ;
-			console.log('[AUTH REGISTER]:', error)
+			console.error('<-- ERROR --> [AUTH REGISTER]:', error)
 			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 
 	@Post('login')
 	@HttpCode(HttpStatus.OK)
@@ -34,8 +39,24 @@ export class AuthController {
 			return await firstValueFrom(observable);
 		} catch(err) {
 			const error = err as Error;
-			console.log('[AUTH LOGIN]:', error);
+			console.log('<-- ERROR --> [AUTH LOGIN]:', error);
 			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+
+	@Post('refresh')
+	@UseGuards(RefreshAuthGuard)
+	async refresh(@Request() req: { user: JwtPayload }) {
+		console.log(`[API GATEWAY]: Refresh Token request ${req.user.sub}`);
+
+		try {
+			const observable = this.authClient.send<RefreshTCP>('auth-refresh', req.user.sub);
+			return await firstValueFrom(observable);
+		}catch(err) {
+			const error = err as Error;
+			console.log('<-- ERROR --> [AUTH REFRESH]:', error);
+			throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
 		}
 	}
 }

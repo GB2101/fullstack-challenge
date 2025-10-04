@@ -1,5 +1,5 @@
 import { IsEmail, IsString, Length } from "class-validator";
-import { LENGTHS } from "src/constants";
+import { LENGTHS } from "src/utils/constants";
 
 
 export class RegisterUser {

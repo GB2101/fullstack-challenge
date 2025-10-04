@@ -7,10 +7,20 @@ import { AuthController } from './controller/auth/auth.controller';
 import { SERVICES } from './utils/constants';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshJwtStrategy } from './strategies/refresh.strategy';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+
+const ThrottlerLimiter = { provide: APP_GUARD, useClass: ThrottlerGuard };
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true, expandVariables: true }),
+		ThrottlerModule.forRoot({
+			throttlers: [{
+				ttl: parseInt(process.env.throttler_timer ?? '1'),
+				limit: parseInt(process.env.throttler_limit ?? '1'),
+			}]
+		}),
 		ClientsModule.register([
 			{
 				name: SERVICES.AUTH,
@@ -23,6 +33,6 @@ import { RefreshJwtStrategy } from './strategies/refresh.strategy';
 		]),
 	],
 	controllers: [AppController, AuthController],
-	providers: [AppService, JwtStrategy, RefreshJwtStrategy],
+	providers: [AppService, JwtStrategy, RefreshJwtStrategy, ThrottlerLimiter],
 })
 export class AppModule {}

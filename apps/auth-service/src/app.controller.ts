@@ -18,7 +18,13 @@ export class AuthController {
 	@MessagePattern('auth-login')
 	async login(data: LoginUser) {
 		console.log(`[AUTH SERVICE]: Login request ${data.username}`);
-		const token = await this.authService.login(data);
+		return await this.authService.login(data);
+	}
+
+	@MessagePattern('auth-refresh')
+	async refresh(username: string) {
+		console.log(`[AUTH SERVICE]: Refresh request ${username}`);
+		const token = await this.authService.refresh(username);
 		return { token };
 	}
 }

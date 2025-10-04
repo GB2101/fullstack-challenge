@@ -1,18 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt'
+import type { ConfigType } from '@nestjs/config';
 
 import { User } from './entities/user.entity';
 import { LoginUser, RegisterUser } from './validations';
+import { JwtRefresh } from './config';
 
 @Injectable()
 export class AuthService {
 	constructor(
+		private jwtService: JwtService,
+		@Inject(JwtRefresh.KEY) private refreshConfig: ConfigType<typeof JwtRefresh>, 
 		@InjectRepository(User) private userDB: Repository<User>,
-		private jwtService: JwtService
 	) {}
 
 	async create(data:RegisterUser) {
@@ -33,6 +36,18 @@ export class AuthService {
 		const isPasswordValid = await bcrypt.compare(data.password, user.password);
 		if (!isPasswordValid) throw new RpcException('A senha está incorreta');
 
-		return this.jwtService.sign({ sub: data.username });
+		const payload = { sub: data.username };
+		const token = this.jwtService.sign(payload);
+		const refreshToken = this.jwtService.sign(payload, this.refreshConfig);
+
+		return { token, refreshToken };
+	}
+
+	async refresh(username: string) {
+		const user = await this.userDB.findOneBy({ username });
+		if (!user) throw new RpcException('Username não encontrado');
+
+		const payload = { sub: username };
+		return this.jwtService.sign(payload);
 	}
 }

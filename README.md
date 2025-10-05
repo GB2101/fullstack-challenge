@@ -20,3 +20,4 @@
 
 - Como deve ser enviado o projeto?
 - Pode implementar rotas e funcionalidades extras?
+- Vcs querem um sistema kanban ou isso é opcional?

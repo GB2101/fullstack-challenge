@@ -5,9 +5,11 @@
 		"build": "turbo run build",
 		"build:api": "turbo run build --filter=api-gateway",
 		"build:auth": "turbo run build --filter=auth-service",
+		"build:tasks": "turbo run build --filter=tasks-service",
 		"dev": "turbo run dev",
 		"dev:api": "turbo run dev --filter=api-gateway",
 		"dev:auth": "turbo run dev --filter=auth-service",
+		"dev:tasks": "turbo run dev --filter=tasks-service",
 		"lint": "turbo run lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"check-types": "turbo run check-types"

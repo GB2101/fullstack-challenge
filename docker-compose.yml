@@ -1,7 +1,6 @@
 name: fullstack
 
 services:
-  # API Gateway
   api-gateway:
     container_name: api-gateway
     build:
@@ -26,7 +25,6 @@ services:
     networks:
       - challenge-network
   
-  # Auth Service
   auth-service:
     container_name: auth-service
     build:
@@ -50,8 +48,31 @@ services:
       #   condition: service_started
     networks:
       - challenge-network
+  
+  tasks-service:
+    container_name: tasks-service
+    build:
+      context: .
+      dockerfile: ./apps/tasks-service/Dockerfile
+      target: development
+    ports:
+      - '3003:3003'
+    volumes:
+      - .:/app
+      - ./packages:/app/packages
+      - /app/node_modules
+      - /app/apps/tasks-service/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+    depends_on:
+      db:
+        condition: service_started
+    #   rabbitmq:
+    #     condition: service_started
+    networks:
+      - challenge-network
 
-  # Postgres Database
   db:
     image: postgres:17.5-alpine3.21
     container_name: db

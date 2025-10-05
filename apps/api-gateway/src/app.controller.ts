@@ -18,8 +18,8 @@ export class AppController {
 		}
 	}
 
-	@Get('hello')
-  	hello() {
-  		return this.tasksClient.send('hello', {});
-  	}
+	// @Get('hello')
+  	// hello() {
+  	// 	return this.tasksClient.send('hello', {});
+  	// }
 }

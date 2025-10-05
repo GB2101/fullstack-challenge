@@ -1,12 +1,13 @@
-import { IsString, Length } from "class-validator";
-import { LENGTHS } from "src/utils/constants";
+import { IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class LoginUser {
 	@IsString()
-	@Length(LENGTHS.USERNAME)
+	@ApiProperty({example: 'username'})
 		username: string;
-
+	
 	@IsString()
-	@Length(LENGTHS.PASSWORD)
+	@ApiProperty()
+	@ApiProperty({example: 'password'})
 		password: string;
 }

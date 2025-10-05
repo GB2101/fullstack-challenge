@@ -5,21 +5,25 @@ import { firstValueFrom } from 'rxjs';
 
 import { Error, JwtPayload } from 'src/types';
 import { SERVICES } from 'src/utils/constants';
-import { LoginTCP, RegisterTCP } from './types';
 import { RefreshAuthGuard } from 'src/guards/refresh-auth.guard';
-import { RefreshTCP } from './types/Refresh';
+import { LoginResponse, RegisterResponse, RefreshResponse } from './types';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Autenticação')
 @Controller('auth')
 export class AuthController {
 	constructor(@Inject(SERVICES.AUTH) private authClient: ClientProxy) {}
 
 
 	@Post('register')
+	@ApiOperation({ summary: 'Registra um usuário no sistema' })
+	@ApiCreatedResponse({description: 'Usuário criado com sucesso'})
+	@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 	async register(@Body() body: RegisterUser) {
 		console.log(`[API GATEWAY]: Register request ${body.username}`);
 
 		try {
-			const observable = this.authClient.send<RegisterTCP>('auth-register', body);
+			const observable = this.authClient.send<RegisterResponse>('auth-register', body);
 			return await firstValueFrom(observable);
 		} catch (err) {
 			const error = err as { message: string } ;
@@ -31,11 +35,14 @@ export class AuthController {
 
 	@Post('login')
 	@HttpCode(HttpStatus.OK)
+	@ApiOperation({summary: 'Valida informações e loga um usuário no sistema'})
+	@ApiOkResponse({description: 'Usuário logado com sucesso', type: LoginResponse})
+	@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 	async login(@Body() body: LoginUser) {
 		console.log(`[API GATEWAY]: Login request ${body.username}`);
 
 		try {
-			const observable = this.authClient.send<LoginTCP>('auth-login', body);
+			const observable = this.authClient.send<LoginResponse>('auth-login', body);
 			return await firstValueFrom(observable);
 		} catch(err) {
 			const error = err as Error;
@@ -47,11 +54,15 @@ export class AuthController {
 
 	@Post('refresh')
 	@UseGuards(RefreshAuthGuard)
+	@ApiBearerAuth()
+	@ApiOperation({summary: 'Gera um novo token de acesso'})
+	@ApiOkResponse({description: 'Novo token gerado com sucesso', type: RefreshResponse})
+	@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 	async refresh(@Request() req: { user: JwtPayload }) {
 		console.log(`[API GATEWAY]: Refresh Token request ${req.user.sub}`);
 
 		try {
-			const observable = this.authClient.send<RefreshTCP>('auth-refresh', req.user.sub);
+			const observable = this.authClient.send<RefreshResponse>('auth-refresh', req.user.sub);
 			return await firstValueFrom(observable);
 		}catch(err) {
 			const error = err as Error;

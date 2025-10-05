@@ -1,6 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
+import { Document } from "./docs/document";
+import { SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -11,6 +13,9 @@ async function bootstrap() {
 			forbidNonWhitelisted: true,
 		}),
 	);
+
+	const documentFactory = () => SwaggerModule.createDocument(app, Document);
+	SwaggerModule.setup('docs', app, documentFactory);
 
 	const port = process.env.port ?? 3000;
 	await app.listen(port);

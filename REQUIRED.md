@@ -7,7 +7,7 @@
 - [x] ~~**JWT** com **cadastro/login** (email, username, password) e **proteção de rotas no API Gateway**.~~ [04/10/2025]
 - [x] ~~**Hash de senha** com **bcrypt** (ou argon2).~~ [04/10/2025]
 - [x] ~~**Tokens:** `accessToken` (15 min) e `refreshToken` (7 dias) + **endpoint de refresh**.~~ [04/10/2025]
-- [ ] **Swagger/OpenAPI** exposto no Gateway.
+- [x] ~~**Swagger/OpenAPI** exposto no Gateway.~~ [05/10/2025]
 
 ### Tarefas (inclui comentários e histórico)
 
@@ -81,9 +81,9 @@
 
 - [x] ~~**Nest.js** com **TypeORM** (PostgreSQL).~~ [04/10/2025]
 - [x] ~~**JWT** com Guards e estratégias Passport.~~ [04/10/2025]
-- [ ] **Swagger** completo no Gateway (`/api/docs`).
+- [x] ~~**Swagger** completo no Gateway (`/api/docs`).~~ [05/10/2025]
 - [x] ~~**DTOs** com `class-validator` e `class-transformer`.~~ [04/10/2025]
-- [ ] **Microserviços** Nest.js com **RabbitMQ**.
+- [ ] **Microsserviços** Nest.js com **RabbitMQ**.
 - [ ] **WebSocket** Gateway para eventos real-time.
 - [x] ~~**Migrations** com TypeORM.~~ [04/10/2025]
 - [x] ~~**Rate limiting** no API Gateway (10 req/seg).~~ [04/10/2025]
@@ -92,6 +92,6 @@
 
 - [ ] Health checks.
 - [ ] Logging com Winston ou Pino.
-- [ ] Ttestes unitários.
+- [ ] Testes unitários.
 
 ---

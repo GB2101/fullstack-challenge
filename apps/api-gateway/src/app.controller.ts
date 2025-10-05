@@ -1,14 +1,15 @@
-import { Controller, Get, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
 	constructor(private readonly appService: AppService) {}
 
   	@Get("teapot")
-	@UseGuards(JwtAuthGuard)
 	@HttpCode(HttpStatus.I_AM_A_TEAPOT)
+	@ApiOperation({ summary: "I am a teapot" })
+	@ApiResponse({ status: HttpStatus.I_AM_A_TEAPOT, description: 'I am a teapot'})
 	teapot() {
 		return { 
 			message: "I cant brew coffee. I am really sorry!",

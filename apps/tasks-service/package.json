@@ -9,7 +9,6 @@
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"migration:generate": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:generate -d ./src/config/typeorm.config.ts ./migrations/migration",
-		"migration:create": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:create -d ./src/config/typeorm.config.ts ./migrations/migration",
 		"migration:run": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:run -d ./src/config/typeorm.config.ts",
 		"migration:revert": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:revert -d ./src/config/typeorm.config.ts",
 		"start": "nest start",

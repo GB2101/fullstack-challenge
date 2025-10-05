@@ -10,6 +10,10 @@
 - auth-login
 - auth-refresh
 
+### Tasks Service
+
+- tasks-create
+
 ## Decisões Técnicas
 
 - Os campos de Prioridade e Status são referencias para uma tabela propria. Pois isso tras mais flexibilidade para alterar estes campos depois, sem a necessidade de alterar o codigo fonte.

@@ -29,6 +29,13 @@ const ThrottlerLimiter = { provide: APP_GUARD, useClass: ThrottlerGuard };
 					host: process.env.auth_host ?? 'localhost',
 					port: parseInt(process.env.auth_port ?? '3000'),
 				}
+			}, {
+				name: SERVICES.TASKS,
+				transport: Transport.TCP,
+				options: {
+					host: process.env.tasks_host ?? 'localhost',
+					port: parseInt(process.env.tasks_port ?? '3000'),
+				}
 			}
 		]),
 	],

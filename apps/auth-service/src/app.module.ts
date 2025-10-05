@@ -9,7 +9,7 @@ import { Postgres, JwtConfig, JwtRefresh } from './config';
 
 @Module({
 	imports: [
-		ConfigModule.forRoot({ isGlobal: true, expandVariables: true }),
+		ConfigModule.forRoot({isGlobal: true, expandVariables: true}),
 		TypeOrmModule.forRootAsync(Postgres.asProvider()),
 		TypeOrmModule.forFeature([User]),
 		JwtModule.registerAsync(JwtConfig.asProvider()),

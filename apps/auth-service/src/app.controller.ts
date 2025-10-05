@@ -10,7 +10,6 @@ export class AuthController {
 	@MessagePattern('auth-register')
 	async register(data: RegisterUser){
 		console.log(`[AUTH SERVICE]: Register request ${data.username}`);
-
 		await this.authService.create(data);
 		return { success: true };
 	}

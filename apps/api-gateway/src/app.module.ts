@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthController } from './controller/auth/auth.controller';
+import { AuthController } from './controllers/auth/auth.controller';
 import { SERVICES } from './utils/constants';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshJwtStrategy } from './strategies/refresh.strategy';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { TasksController } from './controllers/tasks/tasks.controller';
 
 const ThrottlerLimiter = { provide: APP_GUARD, useClass: ThrottlerGuard };
 
@@ -39,7 +39,7 @@ const ThrottlerLimiter = { provide: APP_GUARD, useClass: ThrottlerGuard };
 			}
 		]),
 	],
-	controllers: [AppController, AuthController],
-	providers: [AppService, JwtStrategy, RefreshJwtStrategy, ThrottlerLimiter],
+	controllers: [AppController, AuthController, TasksController],
+	providers: [JwtStrategy, RefreshJwtStrategy, ThrottlerLimiter],
 })
 export class AppModule {}

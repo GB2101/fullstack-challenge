@@ -4,6 +4,10 @@ export const SERVICES = {
 }
 
 export const LENGTHS = {
-	USERNAME: 5,
-	PASSWORD: 8,
+	username: 5,
+	password: 8,
+
+	Tasks: {
+		title: 5,
+	}
 }

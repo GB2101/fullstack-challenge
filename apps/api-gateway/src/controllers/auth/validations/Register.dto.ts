@@ -10,12 +10,12 @@ export class RegisterUser {
 		email: string;
 	
 	@IsString()
-	@Length(LENGTHS.USERNAME)
-	@ApiProperty({example: 'username', minLength: LENGTHS.USERNAME})
+	@Length(LENGTHS.username)
+	@ApiProperty({example: 'username', minLength: LENGTHS.username})
 		username: string;
 	
 	@IsString()
-	@Length(LENGTHS.PASSWORD)
-	@ApiProperty({example: 'password', minLength: LENGTHS.PASSWORD})
+	@Length(LENGTHS.password)
+	@ApiProperty({example: 'password', minLength: LENGTHS.password})
 		password: string;
 }

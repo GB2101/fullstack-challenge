@@ -26,7 +26,7 @@ export class AuthController {
 			const observable = this.authClient.send<RegisterResponse>('auth-register', body);
 			return await firstValueFrom(observable);
 		} catch (err) {
-			const error = err as { message: string } ;
+			const error = err as Error;
 			console.error('<-- ERROR --> [AUTH REGISTER]:', error)
 			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
 		}

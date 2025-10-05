@@ -8,8 +8,9 @@
 	"scripts": {
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+		"seed": "ts-node src/seeding/seed.ts",
+		"migration": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:run -d ./src/config/typeorm.config.ts",
 		"migration:generate": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:generate -d ./src/config/typeorm.config.ts ./migrations/migration",
-		"migration:run": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:run -d ./src/config/typeorm.config.ts",
 		"migration:revert": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:revert -d ./src/config/typeorm.config.ts",
 		"start": "nest start",
 		"start:dev": "nest start --watch",
@@ -26,8 +27,10 @@
 		"@nestjs/common": "^11.0.1",
 		"@nestjs/core": "^11.0.1",
 		"@nestjs/platform-express": "^11.0.1",
+		"nanoid": "^5.1.6",
 		"reflect-metadata": "^0.2.2",
-		"rxjs": "^7.8.1"
+		"rxjs": "^7.8.1",
+		"typeorm-extension": "^3.7.1"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.2.0",

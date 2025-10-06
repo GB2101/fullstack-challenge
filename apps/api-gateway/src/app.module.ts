@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AuthController } from './controllers/auth/auth.controller';
-import { SERVICES } from './utils/constants';
+import { SERVICES } from './utils/Constants';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshJwtStrategy } from './strategies/refresh.strategy';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';

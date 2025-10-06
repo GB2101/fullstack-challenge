@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, HttpCode, HttpException, HttpStatus, Inject, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom, Observable } from 'rxjs';
-import { SERVICES } from 'src/utils/constants';
+import { SERVICES } from 'src/utils/Constants';
 import { CreateTasks } from './validations';
 import { CreateResponse } from './types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';

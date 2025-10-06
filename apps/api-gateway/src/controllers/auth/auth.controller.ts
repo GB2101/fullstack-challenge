@@ -4,7 +4,7 @@ import { LoginUser, RegisterUser } from './validations';
 import { firstValueFrom } from 'rxjs';
 
 import { Error, JwtPayload } from 'src/types';
-import { SERVICES } from 'src/utils/constants';
+import { SERVICES } from 'src/utils/Constants';
 import { RefreshAuthGuard } from 'src/guards/refresh-auth.guard';
 import { LoginResponse, RegisterResponse, RefreshResponse } from './types';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';

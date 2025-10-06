@@ -1,13 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Priority {
+export class Status {
 	@PrimaryGeneratedColumn()
 		id: number;
-	
-	@Column()
-		name: string;
 
 	@Column()
-		level: number;
+		name: string;
 }

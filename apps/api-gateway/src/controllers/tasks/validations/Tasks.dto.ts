@@ -1,5 +1,5 @@
 import { IsDateString, IsNumber, IsString, Length } from "class-validator";
-import { LENGTHS } from "src/utils/constants";
+import { LENGTHS } from "src/utils/Constants";
 
 export class CreateTasks {
 	@IsString()

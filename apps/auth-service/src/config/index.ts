@@ -1,2 +1,2 @@
-export * from './jwt.config'
-export * from './postgres.config'
+export * from './Jwt.config'
+export * from './Postgres.config'

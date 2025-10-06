@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsString, Length } from "class-validator";
-import { LENGTHS } from "src/utils/constants";
+import { LENGTHS } from "src/utils/Constants";
 
 
 export class RegisterUser {

@@ -1,7 +1,7 @@
 import { ConfigService } from "@nestjs/config";
 import { DataSource, DataSourceOptions } from "typeorm";
 import { runSeeders, SeederOptions } from "typeorm-extension";
-import { InitSeeder } from "./init.seeder";
+import { InitSeeder } from "./Init.seeder";
 import { config } from 'dotenv';
 config();
 

@@ -1,21 +1,23 @@
-import { Body, Controller, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Inject, Post, Request, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { SERVICES } from 'src/utils/constants';
 import { CreateTasks } from './validations';
 import { CreateResponse } from './types';
-import { firstValueFrom } from 'rxjs';
-import { Error } from 'src/types';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import type { Error, Authorization } from 'src/types';
 
 @Controller('tasks')
 export class TasksController {
 	constructor(@Inject(SERVICES.TASKS) private tasksClient: ClientProxy) {}
 
 	@Post()
-	async create(@Body() body: CreateTasks) {
+	@UseGuards(JwtAuthGuard)
+	async create(@Request() req: Authorization, @Body() body: CreateTasks) {
 		console.log(`[API GATEWAY]: Register request ${body.title}`);
 
 		try {
-			const observable = this.tasksClient.send<CreateResponse>('tasks-create', body);
+			const observable = this.tasksClient.send<CreateResponse>('tasks-create', { ...body, username: req.user.sub });
 			return await firstValueFrom(observable);
 		} catch (err) {
 			const error = err as Error

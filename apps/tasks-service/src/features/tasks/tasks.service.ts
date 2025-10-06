@@ -21,7 +21,9 @@ export class TasksService {
 		if (!priority) throw new RpcException('Prioridade não encontrada');
 
 		const deadline = new Date(data.deadline);
-		const tasks = this.tasksDB.create({...data, deadline, status, priority});
+		const createdBy = data.username;
+		
+		const tasks = this.tasksDB.create({...data, createdBy, deadline, status, priority});
 		return await this.tasksDB.save(tasks);
 	}
 }

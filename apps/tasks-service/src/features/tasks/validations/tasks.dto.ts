@@ -1,4 +1,5 @@
 export class CreateTasks {
+	username: string;
 	title: string;
 	description: string;
 	deadline: string;

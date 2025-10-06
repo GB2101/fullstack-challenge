@@ -16,14 +16,19 @@ export class TasksService {
 	async create(data: CreateTasks) {
 		const status = await this.statusDB.findOneBy({ id: data.statusID });
 		const priority = await this.priorityDB.findOneBy({ id: data.priorityID });
-
+		
 		if (!status) throw new RpcException('Status não encontrado');
 		if (!priority) throw new RpcException('Prioridade não encontrada');
-
+		
 		const deadline = new Date(data.deadline);
 		const createdBy = data.username;
 		
 		const tasks = this.tasksDB.create({...data, createdBy, deadline, status, priority});
 		return await this.tasksDB.save(tasks);
+	}
+	
+	async delete(id: string) {
+		await this.tasksDB.delete(id);
+		return id;
 	}
 }

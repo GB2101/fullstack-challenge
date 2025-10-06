@@ -13,4 +13,10 @@ export class TasksController {
 		const created = await this.tasksService.create(data);
 		return { id: created.id };
 	}
+
+	@MessagePattern('tasks-delete')
+	async delete(id: string) {
+		console.log(`[TASKS SERVICE]: Delete request ${id}`);
+		return await this.tasksService.delete(id);
+	}
 }

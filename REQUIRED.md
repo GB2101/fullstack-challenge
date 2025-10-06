@@ -43,7 +43,7 @@
 - [x] ~~`POST /api/tasks`~~ [05/10/2025]
 - [ ] `GET /api/tasks/:id`
 - [ ] `PUT /api/tasks/:id`
-- [ ] `DELETE /api/tasks/:id`
+- [x] ~~`DELETE /api/tasks/:id`~~ [05/10/2025]
 
 ---
 

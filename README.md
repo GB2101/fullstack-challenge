@@ -13,6 +13,7 @@
 ### Tasks Service
 
 - tasks-create
+- tasks-delete
 
 ## Decisões Técnicas
 

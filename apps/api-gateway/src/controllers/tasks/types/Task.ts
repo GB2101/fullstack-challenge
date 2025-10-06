@@ -9,7 +9,7 @@ class Priority {
 	level: number;
 }
 
-export class UpdateResponse {
+export class TasksResponse {
 	id: string;
 	createdBy: string;
 	title: string;

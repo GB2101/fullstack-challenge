@@ -41,7 +41,7 @@
 
 - [ ] `GET /api/tasks?page=&size=`
 - [x] ~~`POST /api/tasks`~~ [05/10/2025]
-- [ ] `GET /api/tasks/:id`
+- [x] ~~`GET /api/tasks/:id`~~ [06/10/2025]
 - [x] ~~`PUT /api/tasks/:id`~~ [06/10/2025]
 - [x] ~~`DELETE /api/tasks/:id`~~ [05/10/2025]
 

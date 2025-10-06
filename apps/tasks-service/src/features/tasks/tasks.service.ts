@@ -40,6 +40,10 @@ export class TasksService {
 
 
 		await this.tasksDB.update(id, {...fields, status, priority});
+		return await this.get(id);
+	}
+
+	async get(id: string) {
 		const task = await this.tasksDB.findOne({
 			where: { id },
 			relations: {
@@ -48,6 +52,7 @@ export class TasksService {
 			}
 		});
 
+		if (!task) throw new RpcException(`Task com ID ${id} não encontrado`);
 		return task;
 	}
 

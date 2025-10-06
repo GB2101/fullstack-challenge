@@ -25,4 +25,10 @@ export class TasksController {
 		console.log(`[TASKS SERVICE]: Update request ${data.id}`);
 		return await this.tasksService.update(data.id, data.task);
 	}
+
+	@MessagePattern('tasks-get')
+	async get(id:string) {
+		console.log(`[TASKS SERVICE]: Get request ${id}`);
+		return await this.tasksService.get(id);
+	}
 }

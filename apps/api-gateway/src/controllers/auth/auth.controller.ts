@@ -20,7 +20,7 @@ export class AuthController {
 	@ApiOperation({ summary: 'Registra um usuário no sistema' })
 	@ApiCreatedResponse({description: 'Usuário criado com sucesso'})
 	async register(@Body() body: RegisterUser) {
-		console.log(`[API GATEWAY]: Register request ${body.username}`);
+		console.log(`[API GATEWAY]: Register User request ${body.username}`);
 
 		try {
 			const observable = this.authClient.send<RegisterResponse>('auth-register', body);
@@ -39,7 +39,7 @@ export class AuthController {
 	@ApiOkResponse({description: 'Usuário logado com sucesso', type: LoginResponse})
 	@ApiUnauthorizedResponse({description: 'Usuário não autorizado.'})
 	async login(@Body() body: LoginUser) {
-		console.log(`[API GATEWAY]: Login request ${body.username}`);
+		console.log(`[API GATEWAY]: Login User request ${body.username}`);
 
 		try {
 			const observable = this.authClient.send<LoginResponse>('auth-login', body);

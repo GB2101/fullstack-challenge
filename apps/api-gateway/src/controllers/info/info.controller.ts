@@ -15,7 +15,7 @@ export class InfoController {
 	@ApiOkResponse({type: InfoResponse})
 	@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 	async getInfo() {
-		console.log('[API GATEWAY]: Get request INFO');
+		console.log('[API GATEWAY]: Get Info request');
 
 		try {
 			const observable = this.taskClient.send<InfoResponse>('info-list', {});

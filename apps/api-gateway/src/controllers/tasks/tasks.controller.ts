@@ -19,7 +19,7 @@ export class TasksController {
 	@ApiOperation({summary: 'Cria uma nova task'})
 	@ApiCreatedResponse({description: 'Task criada com sucesso',type: CreateResponse})
 	async create(@Request() req: Authorization, @Body() body: CreateTasks) {
-		console.log(`[API GATEWAY]: Register request ${body.title}`);
+		console.log(`[API GATEWAY]: Register Task request ${body.title}`);
 
 		try {
 			const observable = this.tasksClient.send<CreateResponse>('tasks-create', { ...body, username: req.user.sub });
@@ -36,7 +36,7 @@ export class TasksController {
 	@ApiOperation({summary: 'Deleta uma task'})
 	@ApiNoContentResponse({description: 'Task deletada com sucesso'})
 	async delete(@Param('id') id: string) {
-		console.log(`[API GATEWAY]: Delete request ${id}`);
+		console.log(`[API GATEWAY]: Delete Task request ${id}`);
 
 		try {
 			const observable = this.tasksClient.send<void>('tasks-delete', id);
@@ -53,7 +53,7 @@ export class TasksController {
 	@ApiOkResponse({description: 'Task atualizada com sucesso', type: TasksResponse})
 	@ApiNotFoundResponse({description: 'ID não encontrado'})
 	async update(@Param('id') id: string, @Body() body: UpdateTasks) {
-		console.log(`[API GATEWAY]: Update request ${id}`);
+		console.log(`[API GATEWAY]: Update Task request ${id}`);
 
 		try {
 			const observable = this.tasksClient.send<TasksResponse>('tasks-update', { id, task: body });
@@ -70,7 +70,7 @@ export class TasksController {
 	@ApiOkResponse({description: 'Task retornada', type: TasksResponse})
 	@ApiNotFoundResponse({description: 'ID não encontrado'})
 	async get(@Param('id') id: string) {
-		console.log(`[API GATEWAY]: Get request ${id}`);
+		console.log(`[API GATEWAY]: Get Task request ${id}`);
 
 		try {
 			const observable = this.tasksClient.send<TasksResponse>('tasks-get', id);
@@ -86,7 +86,7 @@ export class TasksController {
 	@ApiOperation({summary: 'Lista as Tasks existentes'})
 	@ApiOkResponse({description: 'Lista de Tasks retornada', type: TasksResponse, isArray: true})
 	async search(@Query() query: SearchTasks) {
-		console.log(`[API GATEWAY]: Search request`);
+		console.log(`[API GATEWAY]: Search Tasks request`);
 
 		try {
 			const observable = this.tasksClient.send<SearchResponse>('tasks-search', {

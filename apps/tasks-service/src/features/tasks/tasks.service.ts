@@ -2,20 +2,20 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Priority, Status, Task } from 'src/entities';
+import { Task } from 'src/entities';
 import { CreateTasks, UpdateTasks, SearchTasks } from './validations';
+import { InfoService } from '../info/info.service';
 
 @Injectable()
 export class TasksService {
 	constructor(
+		private readonly infoService: InfoService,
 		@InjectRepository(Task) private tasksDB: Repository<Task>,
-		@InjectRepository(Status) private statusDB:Repository<Status>,
-		@InjectRepository(Priority) private priorityDB: Repository<Priority>,
 	) {}
 	
 	async create(data: CreateTasks) {
-		const status = await this.getStatus(data.statusID);
-		const priority = await this.getPriority(data.priorityID);
+		const status = await this.infoService.getStatus(data.statusID);
+		const priority = await this.infoService.getPriority(data.priorityID);
 
 		const deadline = new Date(data.deadline);
 		const createdBy = data.username;
@@ -35,8 +35,8 @@ export class TasksService {
 
 
 		const {statusID, priorityID, ...fields} = data;
-		const status = await this.getStatus(statusID);
-		const priority = await this.getPriority(priorityID);
+		const status = await this.infoService.getStatus(statusID);
+		const priority = await this.infoService.getPriority(priorityID);
 
 
 		await this.tasksDB.update(id, {...fields, status, priority});
@@ -66,23 +66,5 @@ export class TasksService {
 				priority: true,
 			}
 		});
-	}
-
-	private async getStatus(id: number | undefined) {
-		if (!id) return undefined;
-
-		const status = await this.statusDB.findOneBy({ id });
-		if (!status) throw new RpcException(`Status com ID ${id} não encontrado`);
-
-		return status;
-	}
-	
-	private async getPriority(id: number | undefined) {
-		if (!id) return undefined;
-		
-		const priority = await this.priorityDB.findOneBy({ id });
-		if (!priority) throw new RpcException(`Prioridade com ID ${id} não encontrada`);
-
-		return priority;
 	}
 }

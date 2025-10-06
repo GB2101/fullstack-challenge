@@ -1,2 +1,2 @@
-export * from './Error'
-export * from './JwtPayload'
+export * from './Error';
+export * from './JwtPayload';

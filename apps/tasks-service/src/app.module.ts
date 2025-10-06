@@ -5,6 +5,8 @@ import { Postgres } from './config/Postgres.config';
 import { Priority, Status, Task } from './entities';
 import { TasksController } from './features/tasks/tasks.controller';
 import { TasksService } from './features/tasks/tasks.service';
+import { InfoController } from './features/info/info.controller';
+import { InfoService } from './features/info/info.service';
 
 @Module({
 	imports: [
@@ -12,7 +14,7 @@ import { TasksService } from './features/tasks/tasks.service';
 		TypeOrmModule.forRootAsync(Postgres.asProvider()),
 		TypeOrmModule.forFeature([Priority, Status, Task])
 	],
-	controllers: [TasksController],
-	providers: [TasksService],
+	controllers: [TasksController, InfoController],
+	providers: [TasksService, InfoService],
 })
 export class AppModule {}

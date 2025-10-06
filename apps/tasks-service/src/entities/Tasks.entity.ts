@@ -6,7 +6,7 @@ import { NanoID } from "../utils/Nanoid";
 export class Task {
 	@PrimaryColumn()
 		id: string;
-	
+
 	@Column()
 		createdBy: string;
 
@@ -18,13 +18,16 @@ export class Task {
 
 	@Column()
 		deadline: Date;
-	
+
 	@CreateDateColumn()
 		creationDate: Date;
 
+	@Column({type: 'simple-array', nullable: true})
+		users?: string[];
+
 	@ManyToOne(() => Priority)
 		priority: Priority;
-	
+
 	@ManyToOne(() => Status)
 		status: Status;
 

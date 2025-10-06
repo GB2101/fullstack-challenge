@@ -1,5 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
-
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Status, Priority } from "src/classes";
 
 export class TasksResponse {
@@ -26,4 +25,7 @@ export class TasksResponse {
 
 	@ApiProperty()
 		priority: Priority;
+
+	@ApiPropertyOptional({example: ["username"]})
+		users?: string[];
 }

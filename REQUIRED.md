@@ -12,7 +12,7 @@
 ### Tarefas (inclui comentários e histórico)
 
 - [x] ~~**CRUD completo** com campos: **título**, **descrição**, **prazo**, **prioridade** e **status**.~~ [06/10/2025]
-- [ ] **Atribuição a múltiplos usuários**.
+- [x] ~~**Atribuição a múltiplos usuários**.~~ [06/10/2025]
 - [x] ~~**Comentários**: criar e listar em cada tarefa.~~ [06/10/2025]
 - [ ] **Histórico de alterações** (audit log simplificado).
 

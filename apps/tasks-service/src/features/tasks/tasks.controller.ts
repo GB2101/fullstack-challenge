@@ -23,7 +23,7 @@ export class TasksController {
 	@MessagePattern('tasks-update')
 	async update(data: UpdateTasks) {
 		console.log(`[TASKS SERVICE]: Update request ${data.id}`);
-		return await this.tasksService.update(data.id, data.task);
+		return await this.tasksService.update(data);
 	}
 
 	@MessagePattern('tasks-get')

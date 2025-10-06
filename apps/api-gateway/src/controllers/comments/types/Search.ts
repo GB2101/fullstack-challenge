@@ -1,7 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 class CommentResponse {
+	@ApiProperty({example: 101})
+		id: number;
+	
+	@ApiProperty({example: 'username'})
+		username: string;
+	
+	@ApiProperty({example: 'this is a comment'})
+		comment: string;
 
+	@ApiProperty()
+		timestamp: Date;
 }
 
 export class SearchResponse {

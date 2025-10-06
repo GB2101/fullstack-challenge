@@ -4,8 +4,9 @@ import { firstValueFrom } from 'rxjs';
 import { SERVICES } from 'src/utils/Constants';
 import { InfoResponse } from './types';
 import type { Error } from 'src/types';
-import { ApiBadRequestResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Informações')
 @Controller('info')
 export class InfoController {
 	constructor(@Inject(SERVICES.TASKS) private taskClient: ClientGrpcProxy) {}

@@ -1,4 +1,9 @@
+import { ApiProperty } from "@nestjs/swagger";
+
 export class CreateResponse {
-	id: number;
-	timestamp: Date;
+	@ApiProperty({example: 1})
+		id: number;
+
+	@ApiProperty()
+		timestamp: Date;
 }

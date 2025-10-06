@@ -12,7 +12,7 @@ export class Proxy {
 
 	async send<Response, Input = unknown>(message: string, data?: Input, options?: ProxyOptions): Promise<Response> {
 		try {
-			const observable = this.client.send<Response>(message, data);
+			const observable = this.client.send<Response>(message, data ?? {});
 			return await firstValueFrom(observable);
 		} catch (err) {
 			const error = err as Error;

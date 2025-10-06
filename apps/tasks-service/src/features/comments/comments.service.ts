@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment, Task } from 'src/entities';
 import { Repository } from 'typeorm';
-import { CreateComment } from './validations/Create.dto';
+import { CreateComment, Pagination, SearchComment } from './validations';
 import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
@@ -20,5 +20,24 @@ export class CommentsService {
 
 		const comment = this.commentDB.create({task, ...fields})
 		return await this.commentDB.save(comment);
+	}
+
+	async search(data: SearchComment) {
+		const {taskID, page, size} = data;
+		const offset = (page - 1) * size;
+		
+		return await this.commentDB.findAndCount({
+			skip: offset,
+			take: size,
+			order: {
+				timestamp: 'DESC',
+				id: 'DESC',
+			},
+			where: {
+				task: {
+					id: taskID
+				}
+			}
+		});
 	}
 }

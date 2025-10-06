@@ -3,7 +3,7 @@ import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNoContentR
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { DEFAULTS, SERVICES } from 'src/utils/Constants';
-import { CreateTasks, UpdateTasks, SearchTasks } from './validations';
+import { CreateTasks, UpdateTasks, Pagination } from './validations';
 import { CreateResponse, SearchResponse, TasksResponse } from './types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import type { Error, Authorization } from 'src/types';
@@ -84,8 +84,8 @@ export class TasksController {
 
 	@Get()
 	@ApiOperation({summary: 'Lista as Tasks existentes'})
-	@ApiOkResponse({description: 'Lista de Tasks retornada', type: TasksResponse, isArray: true})
-	async search(@Query() query: SearchTasks) {
+	@ApiOkResponse({description: 'Lista de Tasks retornada', type: SearchResponse})
+	async search(@Query() query: Pagination) {
 		console.log(`[API GATEWAY]: Search Tasks request`);
 
 		try {

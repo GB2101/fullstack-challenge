@@ -48,7 +48,7 @@
 ---
 
 - [x] ~~`POST /api/tasks/:id/comments`~~ [06/10/2025]
-- [ ] `GET /api/tasks/:id/comments?page=&size`
+- [x] ~~`GET /api/tasks/:id/comments?page=&size`~~ [06/10/2025]
 
 ### WebSocket Events
 

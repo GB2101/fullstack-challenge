@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { TasksService } from './tasks.service';
-import type { CreateTasks, UpdateMessage, SearchTasks } from './validations';
+import type { CreateTasks, UpdateMessage, Pagination } from './validations';
 
 @Controller('tasks')
 export class TasksController {
@@ -33,13 +33,13 @@ export class TasksController {
 	}
 
 	@MessagePattern('tasks-search')
-	async search(params: SearchTasks) {
+	async search(params: Pagination) {
 		console.log('[TASKS SERVICE]: Search request');
-		const [results, counter] = await this.tasksService.search(params);
+		const [results, total] = await this.tasksService.search(params);
 		return {
-			results,
+			total,
 			length: results.length,
-			counter,
+			results,
 		}
 	}
 }

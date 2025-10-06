@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { setSeederFactory } from "typeorm-extension";
 import { Task } from "../../entities";
 
-export const TasksFactory = setSeederFactory(Task, () => {
+export const TaskFactory = setSeederFactory(Task, () => {
 	const task = new Task();
 
 	task.title = faker.company.buzzPhrase();

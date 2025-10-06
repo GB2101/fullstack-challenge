@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { MessagePattern } from '@nestjs/microservices';
-import type { CreateComment } from './validations/Create.dto';
+import type { CreateComment, SearchComment } from './validations';
 
 @Controller('comments')
 export class CommentsController {
@@ -9,8 +9,19 @@ export class CommentsController {
 
 	@MessagePattern('comments-create')
 	async create(data: CreateComment) {
-		console.log('[COMMENTS SERVICE]: Comment request');
+		console.log('[COMMENTS SERVICE]: Register Comment request');
 		const { id, timestamp } = await this.commentsService.create(data);
 		return { id, timestamp };
+	}
+
+	@MessagePattern('comments-list')
+	async search(data: SearchComment) {
+		console.log('[COMMENTS SERVICE]: List Comments request');
+		const [results, total] = await this.commentsService.search(data);
+		return {
+			total,
+			length: results.length,
+			results,
+		};
 	}
 }

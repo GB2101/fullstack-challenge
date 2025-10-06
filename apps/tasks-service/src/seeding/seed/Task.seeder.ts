@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 import { Priority, Status, Task } from "../../entities";
 
-export class TestSeeder implements Seeder {
+export class TaskSeeder implements Seeder {
 	async run(dataSource: DataSource, factoryManager: SeederFactoryManager) {
 		console.log('Seeding tasks...')
 		

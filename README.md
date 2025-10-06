@@ -21,6 +21,7 @@
 - info-list
 
 - comments-create
+- comments-list
 
 ## Decisões Técnicas
 

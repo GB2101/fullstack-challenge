@@ -1,4 +1,4 @@
-export type SearchTasks = {
+export type Pagination = {
 	page: number;
 	size: number;
 }

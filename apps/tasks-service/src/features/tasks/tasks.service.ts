@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/entities';
-import { CreateTasks, UpdateTasks, SearchTasks } from './validations';
+import { CreateTasks, UpdateTasks, Pagination } from './validations';
 import { InfoService } from '../info/info.service';
 
 @Injectable()
@@ -56,7 +56,7 @@ export class TasksService {
 		return task;
 	}
 
-	async search(params: SearchTasks) {
+	async search(params: Pagination) {
 		const offset = (params.page - 1) * params.size;
 		return await this.tasksDB.findAndCount({
 			skip: offset,

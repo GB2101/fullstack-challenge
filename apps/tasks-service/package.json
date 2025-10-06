@@ -8,8 +8,9 @@
 	"scripts": {
 		"build": "nest build",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-		"seed": "ts-node src/seeding/Seed.ts",
+		"seed": "ts-node src/seeding/seed.ts",
 		"seed:task": "ts-node src/seeding/Task.seed.ts",
+		"seed:comment": "ts-node src/seeding/Comment.seed.ts",
 		"migration": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:run -d ./src/config/Typeorm.config.ts",
 		"migration:generate": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:generate -d ./src/config/Typeorm.config.ts ./migrations/migration",
 		"migration:revert": "npx ts-node -P ./tsconfig.json -r tsconfig-paths/register ../../node_modules/typeorm/cli.js migration:revert -d ./src/config/Typeorm.config.ts",

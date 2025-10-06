@@ -1,5 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { TasksResponse } from "./Task";
+
+class CommentResponse {
+
+}
 
 export class SearchResponse {
 	@ApiProperty({example: 10, description: 'A quantidade de itens retornado na busca'})
@@ -8,6 +11,6 @@ export class SearchResponse {
 	@ApiProperty({example: 30, description: 'O total de itens existentes'})
 		total: number;
 	
-	@ApiProperty({type: TasksResponse, isArray: true})
-		results: TasksResponse[];
+	@ApiProperty({type: CommentResponse, isArray: true})
+		results: CommentResponse[];
 }

@@ -1,21 +1,36 @@
+import { ApiProperty } from "@nestjs/swagger";
+
 class Status {
-	id: number;
-	name: string;
+	@ApiProperty({example: 1})
+		id: number;
+	@ApiProperty({example: 'TODO'})
+		name: string;
 }
 
 class Priority {
-	id: number;
-	name: string;
-	level: number;
+	@ApiProperty({example: 4})
+		id: number;
+	@ApiProperty({example: 'URGENT'})
+		name: string;
+	@ApiProperty({example: 4})
+		level: number;
 }
 
 export class TasksResponse {
-	id: string;
-	createdBy: string;
-	title: string;
-	description: string;
-	deadline: Date;
-	creationDate: Date;
-	status: Status;
-	priority: Priority;
+	@ApiProperty()
+		id: string;
+	@ApiProperty({example: 'username'})
+		createdBy: string;
+	@ApiProperty({example: 'title'})
+		title: string;
+	@ApiProperty({example: 'description'})
+		description: string;
+	@ApiProperty()
+		deadline: Date;
+	@ApiProperty()
+		creationDate: Date;
+	@ApiProperty()
+		status: Status;
+	@ApiProperty()
+		priority: Priority;
 }

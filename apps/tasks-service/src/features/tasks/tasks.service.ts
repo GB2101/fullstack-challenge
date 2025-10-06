@@ -31,7 +31,7 @@ export class TasksService {
 
 	async update(id: string, data: UpdateTasks) {
 		const validId = await this.tasksDB.existsBy({ id });
-		if (!validId) throw new RpcException(`Task com ID ${id} não encontrado`);
+		if (!validId) throw new RpcException(`Task com ID ${id} não encontrada`);
 
 
 		const {statusID, priorityID, ...fields} = data;
@@ -52,7 +52,7 @@ export class TasksService {
 			}
 		});
 
-		if (!task) throw new RpcException(`Task com ID ${id} não encontrado`);
+		if (!task) throw new RpcException(`Task com ID ${id} não encontrada`);
 		return task;
 	}
 
@@ -81,7 +81,7 @@ export class TasksService {
 		if (!id) return undefined;
 		
 		const priority = await this.priorityDB.findOneBy({ id });
-		if (!priority) throw new RpcException(`Priority com ID ${id} não encontrado`);
+		if (!priority) throw new RpcException(`Prioridade com ID ${id} não encontrada`);
 
 		return priority;
 	}

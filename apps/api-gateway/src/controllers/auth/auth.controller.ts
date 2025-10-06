@@ -7,10 +7,11 @@ import { Error, JwtPayload } from 'src/types';
 import { SERVICES } from 'src/utils/Constants';
 import { RefreshAuthGuard } from 'src/guards/refresh-auth.guard';
 import { LoginResponse, RegisterResponse, RefreshResponse } from './types';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 @ApiTags('Autenticação')
 @Controller('auth')
+@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 export class AuthController {
 	constructor(@Inject(SERVICES.AUTH) private authClient: ClientProxy) {}
 
@@ -18,7 +19,6 @@ export class AuthController {
 	@Post('register')
 	@ApiOperation({ summary: 'Registra um usuário no sistema' })
 	@ApiCreatedResponse({description: 'Usuário criado com sucesso'})
-	@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 	async register(@Body() body: RegisterUser) {
 		console.log(`[API GATEWAY]: Register request ${body.username}`);
 
@@ -37,7 +37,7 @@ export class AuthController {
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({summary: 'Valida informações e loga um usuário no sistema'})
 	@ApiOkResponse({description: 'Usuário logado com sucesso', type: LoginResponse})
-	@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
+	@ApiUnauthorizedResponse({description: 'Usuário não autorizado.'})
 	async login(@Body() body: LoginUser) {
 		console.log(`[API GATEWAY]: Login request ${body.username}`);
 
@@ -47,7 +47,7 @@ export class AuthController {
 		} catch(err) {
 			const error = err as Error;
 			console.log('<-- ERROR --> [AUTH LOGIN]:', error);
-			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+			throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
 		}
 	}
 
@@ -57,7 +57,7 @@ export class AuthController {
 	@ApiBearerAuth()
 	@ApiOperation({summary: 'Gera um novo token de acesso'})
 	@ApiOkResponse({description: 'Novo token gerado com sucesso', type: RefreshResponse})
-	@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
+	@ApiUnauthorizedResponse({description: 'Usuário não autorizado.'})
 	async refresh(@Request() req: { user: JwtPayload }) {
 		console.log(`[API GATEWAY]: Refresh Token request ${req.user.sub}`);
 

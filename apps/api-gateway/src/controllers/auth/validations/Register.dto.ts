@@ -1,21 +1,22 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsString, Length } from "class-validator";
+import { IsAlphanumeric, IsEmail, IsString, IsStrongPassword, Length } from "class-validator";
 import { LENGTHS } from "src/utils/Constants";
 
 
 export class RegisterUser {
-	@IsString()
 	@IsEmail()
+	@IsString()
 	@ApiProperty({example: 'example@mail.com'})
 		email: string;
 	
 	@IsString()
+	@IsAlphanumeric()
 	@Length(LENGTHS.username)
 	@ApiProperty({example: 'username', minLength: LENGTHS.username})
 		username: string;
 	
 	@IsString()
-	@Length(LENGTHS.password)
+	@IsStrongPassword()
 	@ApiProperty({example: 'password', minLength: LENGTHS.password})
 		password: string;
 }

@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { TasksService } from './tasks.service';
-import type { CreateTasks, UpdateMessage, Pagination } from './validations';
+import type { CreateTasks, UpdateTasks, Pagination } from './validations';
 
 @Controller('tasks')
 export class TasksController {
@@ -21,7 +21,7 @@ export class TasksController {
 	}
 
 	@MessagePattern('tasks-update')
-	async update(data: UpdateMessage) {
+	async update(data: UpdateTasks) {
 		console.log(`[TASKS SERVICE]: Update request ${data.id}`);
 		return await this.tasksService.update(data.id, data.task);
 	}

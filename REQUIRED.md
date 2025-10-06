@@ -13,7 +13,7 @@
 
 - [x] ~~**CRUD completo** com campos: **título**, **descrição**, **prazo**, **prioridade** e **status**.~~ [06/10/2025]
 - [ ] **Atribuição a múltiplos usuários**.
-- [ ] **Comentários**: criar e listar em cada tarefa.
+- [x] ~~**Comentários**: criar e listar em cada tarefa.~~ [06/10/2025]
 - [ ] **Histórico de alterações** (audit log simplificado).
 
 ### Notificações & Tempo Real

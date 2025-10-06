@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/entities';
-import { CreateTasks, UpdateTasks, Pagination } from './validations';
+import { CreateTasks, Pagination, UpdateData } from './validations';
 import { InfoService } from '../info/info.service';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class TasksService {
 		return id;
 	}
 
-	async update(id: string, data: UpdateTasks) {
+	async update(id: string, data: UpdateData) {
 		const validId = await this.tasksDB.existsBy({ id });
 		if (!validId) throw new RpcException(`Task com ID ${id} não encontrada`);
 

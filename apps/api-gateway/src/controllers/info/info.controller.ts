@@ -1,15 +1,17 @@
-import { Controller, Get, HttpException, HttpStatus, Inject } from '@nestjs/common';
-import { ClientGrpcProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-import { SERVICES } from 'src/utils/Constants';
-import { InfoResponse } from './types';
-import type { Error } from 'src/types';
+import { Controller, Get, Inject } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ClientGrpcProxy } from '@nestjs/microservices';
+import { SERVICES, Proxy } from 'src/utils';
+import { InfoResponse } from './types';
 
 @ApiTags('Informações')
 @Controller('info')
 export class InfoController {
-	constructor(@Inject(SERVICES.TASKS) private taskClient: ClientGrpcProxy) {}
+	private taskProxy: Proxy;
+
+	constructor(@Inject(SERVICES.TASKS) private taskClient: ClientGrpcProxy) {
+		this.taskProxy = new Proxy(this.taskClient, 'info');
+	}
 
 	@Get()
 	@ApiOperation({summary: 'Lista os Status e Prioridades existentes'})
@@ -17,14 +19,6 @@ export class InfoController {
 	@ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 	async getInfo() {
 		console.log('[API GATEWAY]: Get Info request');
-
-		try {
-			const observable = this.taskClient.send<InfoResponse>('info-list', {});
-			return await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error;
-			console.error('<-- ERROR --> [INFO GET]:', error);
-			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-		}
+		return await this.taskProxy.send<InfoResponse>('info-list');
 	}
 }

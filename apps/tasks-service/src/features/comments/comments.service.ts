@@ -25,6 +25,9 @@ export class CommentsService {
 	async search(data: SearchComment) {
 		const {taskID, page, size} = data;
 		const offset = (page - 1) * size;
+
+		const taskExists = await this.taskDB.existsBy({ id: data.taskID });
+		if (!taskExists) throw new RpcException(`Task com ID ${taskID} não encontrada`);
 		
 		return await this.commentDB.findAndCount({
 			skip: offset,

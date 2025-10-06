@@ -1,19 +1,22 @@
-import { Body, Controller, HttpCode, HttpException, HttpStatus, Inject, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Inject, Post, Request, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUser, RegisterUser } from './validations';
-import { firstValueFrom } from 'rxjs';
 
-import { Error, JwtPayload } from 'src/types';
+import { JwtPayload } from 'src/types';
 import { SERVICES } from 'src/utils/Constants';
 import { RefreshAuthGuard } from 'src/guards/refresh-auth.guard';
 import { LoginResponse, RegisterResponse, RefreshResponse } from './types';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Proxy, ProxyOptions } from 'src/utils';
 
 @ApiTags('Autenticação')
 @Controller('auth')
 @ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 export class AuthController {
-	constructor(@Inject(SERVICES.AUTH) private authClient: ClientProxy) {}
+	private authProxy: Proxy;
+	constructor(@Inject(SERVICES.AUTH) private authClient: ClientProxy) {
+		this.authProxy = new Proxy(this.authClient, 'auth');
+	}
 
 
 	@Post('register')
@@ -21,15 +24,7 @@ export class AuthController {
 	@ApiCreatedResponse({description: 'Usuário criado com sucesso'})
 	async register(@Body() body: RegisterUser) {
 		console.log(`[API GATEWAY]: Register User request ${body.username}`);
-
-		try {
-			const observable = this.authClient.send<RegisterResponse>('auth-register', body);
-			return await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error;
-			console.error('<-- ERROR --> [AUTH REGISTER]:', error)
-			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-		}
+		return await this.authProxy.send<RegisterResponse, RegisterUser>('auth-register', body, {op: 'register'});
 	}
 
 
@@ -41,14 +36,12 @@ export class AuthController {
 	async login(@Body() body: LoginUser) {
 		console.log(`[API GATEWAY]: Login User request ${body.username}`);
 
-		try {
-			const observable = this.authClient.send<LoginResponse>('auth-login', body);
-			return await firstValueFrom(observable);
-		} catch(err) {
-			const error = err as Error;
-			console.log('<-- ERROR --> [AUTH LOGIN]:', error);
-			throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
-		}
+		const options: ProxyOptions = {
+			op: 'login',
+			code: HttpStatus.UNAUTHORIZED,
+		};
+
+		return await this.authProxy.send<LoginResponse, LoginUser>('auth-login', body, options);
 	}
 
 
@@ -61,13 +54,11 @@ export class AuthController {
 	async refresh(@Request() req: { user: JwtPayload }) {
 		console.log(`[API GATEWAY]: Refresh Token request ${req.user.sub}`);
 
-		try {
-			const observable = this.authClient.send<RefreshResponse>('auth-refresh', req.user.sub);
-			return await firstValueFrom(observable);
-		}catch(err) {
-			const error = err as Error;
-			console.log('<-- ERROR --> [AUTH REFRESH]:', error);
-			throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+		const options: ProxyOptions = {
+			op: 'refresh',
+			code: HttpStatus.UNAUTHORIZED,
 		}
+		
+		return await this.authProxy.send<RefreshResponse, string>('auth-refresh', req.user.sub, options);
 	}
 }

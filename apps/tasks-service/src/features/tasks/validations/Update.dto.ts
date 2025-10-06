@@ -1,7 +1,7 @@
 import { CreateTasks } from "./Create.dto";
 
-export type UpdateTasks = Partial<CreateTasks>;
-export type UpdateMessage = {
+export type UpdateData = Partial<CreateTasks>;
+export type UpdateTasks = {
 	id: string;
-	task: UpdateTasks;
+	task: UpdateData;
 }

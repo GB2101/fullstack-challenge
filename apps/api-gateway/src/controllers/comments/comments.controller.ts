@@ -1,12 +1,11 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Body, Controller, Get, HttpStatus, Inject, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { firstValueFrom } from 'rxjs';
+import { ClientProxy } from '@nestjs/microservices';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { DEFAULTS, SERVICES } from 'src/utils/Constants';
+import { DEFAULTS, SERVICES, Proxy, ProxyOptions } from 'src/utils';
 import { CreateResponse, SearchResponse } from './types';
 import { CreateComment, CreateCommentReq, Pagination, SearchCommentReq } from './validations';
-import type { Authorization, Error } from 'src/types';
+import type { Authorization } from 'src/types';
 
 @ApiBearerAuth()
 @ApiTags('Comentários')
@@ -14,7 +13,10 @@ import type { Authorization, Error } from 'src/types';
 @Controller('tasks/:id/comments')
 @ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 export class CommentsController {
-	constructor(@Inject(SERVICES.TASKS) private tasksClient: ClientProxy) {}
+	private taskProxy: Proxy
+	constructor(@Inject(SERVICES.TASKS) private tasksClient: ClientProxy) {
+		this.taskProxy = new Proxy(this.tasksClient, 'comments');
+	}
 
 	@Post()
 	@ApiOperation({summary: 'Comenta dentro de uma Task'})
@@ -23,18 +25,17 @@ export class CommentsController {
 	async create(@Request() req: Authorization, @Param('id') id: string, @Body() body: CreateComment) {
 		console.log('[API GATEWAY]: Register Comment request');
 
-		try {
-			const observable = this.tasksClient.send<CreateResponse, CreateCommentReq>('comments-create', {
-				taskID: id,
-				comment: body.comment,
-				username: req.user.sub,
-			});
-			return await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error;
-			console.error('<-- ERROR --> [INFO GET]:', error);
-			throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-		}
+		const options: ProxyOptions = {
+			op: 'create',
+			code: HttpStatus.NOT_FOUND
+		};
+		const data: CreateCommentReq = {
+			taskID: id,
+			comment: body.comment,
+			username: req.user.sub,
+		};
+
+		return await this.taskProxy.send<CreateResponse, CreateCommentReq>('comments-create', data, options);
 	}
 
 	@Get()
@@ -43,17 +44,16 @@ export class CommentsController {
 	async search(@Param('id') id: string, @Query() params: Pagination) {
 		console.log('[API GATEWAY]: List Comments request');
 
-		try {
-			const observable = this.tasksClient.send<SearchResponse, SearchCommentReq>('comments-list', {
-				taskID: id,
-				page: params.page ?? DEFAULTS.SearchParams.page,
-				size: params.size ?? DEFAULTS.SearchParams.size,
-			});
-			return await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error;
-			console.error('<-- ERROR --> [INFO GET]:', error);
-			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-		}
+		const options: ProxyOptions = {
+			op: 'get',
+			code: HttpStatus.NOT_FOUND
+		};
+		const data: SearchCommentReq = {
+			taskID: id,
+			page: params.page ?? DEFAULTS.SearchParams.page,
+			size: params.size ?? DEFAULTS.SearchParams.size,
+		};
+
+		return await this.taskProxy.send<SearchResponse, SearchCommentReq>('comments-list', data, options);
 	}
 }

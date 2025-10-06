@@ -1,19 +1,22 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Inject, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import { DEFAULTS, SERVICES } from 'src/utils/Constants';
-import { CreateTasks, UpdateTasks, Pagination } from './validations';
+import { CreateTasks, UpdateTasks, Pagination, CreateTasksReq, UpdateTasksReq } from './validations';
 import { CreateResponse, SearchResponse, TasksResponse } from './types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import type { Error, Authorization } from 'src/types';
+import { Proxy, ProxyOptions } from 'src/utils';
+import type { Authorization } from 'src/types';
 
 @ApiBearerAuth()
 @Controller('tasks')
 @UseGuards(JwtAuthGuard)
 @ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 export class TasksController {
-	constructor(@Inject(SERVICES.TASKS) private tasksClient: ClientProxy) {}
+	private tasksProxy: Proxy;
+	constructor(@Inject(SERVICES.TASKS) private tasksClient: ClientProxy) {
+		this.tasksProxy = new Proxy(this.tasksClient, 'tasks');
+	}
 
 	@Post()
 	@ApiOperation({summary: 'Cria uma nova task'})
@@ -21,14 +24,12 @@ export class TasksController {
 	async create(@Request() req: Authorization, @Body() body: CreateTasks) {
 		console.log(`[API GATEWAY]: Register Task request ${body.title}`);
 
-		try {
-			const observable = this.tasksClient.send<CreateResponse>('tasks-create', { ...body, username: req.user.sub });
-			return await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error
-			console.error('<-- ERROR --> [TASKS CREATE]:', error);
-			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+		const data: CreateTasksReq = {
+			...body,
+			username: req.user.sub,
 		}
+
+		return await this.tasksProxy.send<CreateResponse, CreateTasksReq>('tasks-create', data, {op: 'create'});
 	}
 
 	@Delete(':id')
@@ -37,15 +38,7 @@ export class TasksController {
 	@ApiNoContentResponse({description: 'Task deletada com sucesso'})
 	async delete(@Param('id') id: string) {
 		console.log(`[API GATEWAY]: Delete Task request ${id}`);
-
-		try {
-			const observable = this.tasksClient.send<void>('tasks-delete', id);
-			await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error;
-			console.error('<-- ERROR --> [TASKS DELETE]:', error);
-			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-		}
+		return await this.tasksProxy.send<void, string>('tasks-delete', id, {op: 'delete'});
 	}
 
 	@Put(':id')
@@ -55,14 +48,16 @@ export class TasksController {
 	async update(@Param('id') id: string, @Body() body: UpdateTasks) {
 		console.log(`[API GATEWAY]: Update Task request ${id}`);
 
-		try {
-			const observable = this.tasksClient.send<TasksResponse>('tasks-update', { id, task: body });
-			return await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error;
-			console.error('<-- ERROR --> [TASKS UPDATE]:', error);
-			throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+		const data: UpdateTasksReq = {
+			id,
+			task: body,
 		}
+		const options: ProxyOptions = {
+			op: 'update',
+			code: HttpStatus.NOT_FOUND,
+		}
+
+		return await this.tasksProxy.send<TasksResponse, UpdateTasksReq>('tasks-update', data, options);
 	}
 
 	@Get(':id')
@@ -71,15 +66,13 @@ export class TasksController {
 	@ApiNotFoundResponse({description: 'ID não encontrado'})
 	async get(@Param('id') id: string) {
 		console.log(`[API GATEWAY]: Get Task request ${id}`);
+		
+		const options: ProxyOptions = {
+			op: 'get',
+			code: HttpStatus.NOT_FOUND
+		};
 
-		try {
-			const observable = this.tasksClient.send<TasksResponse>('tasks-get', id);
-			return await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error;
-			console.error('<-- ERROR --> [TASKS GET]:', error);
-			throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-		}
+		return this.tasksProxy.send<TasksResponse, string>('tasks-get', id, options);
 	}
 
 	@Get()
@@ -88,16 +81,11 @@ export class TasksController {
 	async search(@Query() query: Pagination) {
 		console.log(`[API GATEWAY]: Search Tasks request`);
 
-		try {
-			const observable = this.tasksClient.send<SearchResponse>('tasks-search', {
-				page: query.page ?? DEFAULTS.SearchParams.page,
-				size: query.size ?? DEFAULTS.SearchParams.size,
-			});
-			return await firstValueFrom(observable);
-		} catch (err) {
-			const error = err as Error;
-			console.error('<-- ERROR --> [TASKS SEARCH]:', error);
-			throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-		}
+		const data = {
+			page: query.page ?? DEFAULTS.SearchParams.page,
+			size: query.size ?? DEFAULTS.SearchParams.size,
+		};
+
+		return await this.tasksProxy.send<SearchResponse>('tasks-search', data, {op: 'search'});
 	}
 }

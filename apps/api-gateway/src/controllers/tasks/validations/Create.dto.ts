@@ -26,3 +26,7 @@ export class CreateTasks {
 	@ApiProperty({example: 1})
 		statusID: number;
 }
+
+export type CreateTasksReq = CreateTasks & {
+	username: string;
+}

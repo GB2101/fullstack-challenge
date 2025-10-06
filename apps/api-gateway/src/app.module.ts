@@ -10,6 +10,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { TasksController } from './controllers/tasks/tasks.controller';
 import { InfoController } from './controllers/info/info.controller';
+import { CommentsController } from './controllers/comments/comments.controller';
 
 const ThrottlerLimiter = { provide: APP_GUARD, useClass: ThrottlerGuard };
 
@@ -40,7 +41,7 @@ const ThrottlerLimiter = { provide: APP_GUARD, useClass: ThrottlerGuard };
 			}
 		]),
 	],
-	controllers: [AppController, AuthController, TasksController, InfoController],
+	controllers: [AppController, AuthController, TasksController, InfoController, CommentsController],
 	providers: [JwtStrategy, RefreshJwtStrategy, ThrottlerLimiter],
 })
 export class AppModule {}

@@ -8,6 +8,7 @@ export class InfoController {
 
 	@MessagePattern('info-list')
 	async infoList() {
+		console.log('[INFO SERVICE]: List Infos request');
 		const [status, priorities] = await Promise.all([
 			this.infoService.listStatus(),
 			this.infoService.listPriorities(),

@@ -14,6 +14,7 @@
 
 - tasks-create
 - tasks-delete
+- tasks-update
 
 ## Decisões Técnicas
 

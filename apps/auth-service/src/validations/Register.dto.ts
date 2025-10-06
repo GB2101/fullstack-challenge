@@ -1,4 +1,4 @@
-export class RegisterUser {
+export type RegisterUser = {
 	email: string;
 	username: string;
 	password: string;

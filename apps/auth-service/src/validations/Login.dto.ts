@@ -1,4 +1,4 @@
-export class LoginUser {
+export type LoginUser = {
 	username: string;
 	password: string;
 }

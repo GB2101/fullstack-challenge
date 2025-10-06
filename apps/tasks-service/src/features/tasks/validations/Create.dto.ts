@@ -1,4 +1,4 @@
-export class CreateTasks {
+export type CreateTasks = {
 	username: string;
 	title: string;
 	description: string;

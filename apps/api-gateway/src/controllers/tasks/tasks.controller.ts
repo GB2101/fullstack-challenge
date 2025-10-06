@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Inject, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Inject, Param, ParseIntPipe, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { SERVICES } from 'src/utils/Constants';
-import { CreateTasks, UpdateTasks } from './validations';
-import { CreateResponse, TasksResponse } from './types';
+import { DEFAULTS, SERVICES } from 'src/utils/Constants';
+import { CreateTasks, UpdateTasks, SearchTasks } from './validations';
+import { CreateResponse, SearchResponse, TasksResponse } from './types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import type { Error, Authorization } from 'src/types';
 
@@ -65,6 +65,23 @@ export class TasksController {
 		} catch (err) {
 			const error = err as Error;
 			console.error('<-- ERROR --> [TASKS GET]:', error);
+			throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@Get()
+	async search(@Query() query: SearchTasks) {
+		console.log(`[API GATEWAY]: Search request`);
+
+		try {
+			const observable = this.tasksClient.send<SearchResponse>('tasks-search', {
+				page: query.page ?? DEFAULTS.SearchParams.page,
+				size: query.size ?? DEFAULTS.SearchParams.size,
+			});
+			return await firstValueFrom(observable);
+		} catch (err) {
+			const error = err as Error;
+			console.error('<-- ERROR --> [TASKS SEARCH]:', error);
 			throw new HttpException(error.message, HttpStatus.NOT_FOUND);
 		}
 	}

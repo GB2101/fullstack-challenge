@@ -11,7 +11,7 @@
 
 ### Tarefas (inclui comentários e histórico)
 
-- [ ] **CRUD completo** com campos: **título**, **descrição**, **prazo**, **prioridade** e **status**.
+- [x] ~~**CRUD completo** com campos: **título**, **descrição**, **prazo**, **prioridade** e **status**.~~ [06/10/2025]
 - [ ] **Atribuição a múltiplos usuários**.
 - [ ] **Comentários**: criar e listar em cada tarefa.
 - [ ] **Histórico de alterações** (audit log simplificado).
@@ -39,7 +39,7 @@
 
 ---
 
-- [ ] `GET /api/tasks?page=&size=`
+- [x] ~~`GET /api/tasks?page=&size=`~~ [06/10/2025]
 - [x] ~~`POST /api/tasks`~~ [05/10/2025]
 - [x] ~~`GET /api/tasks/:id`~~ [06/10/2025]
 - [x] ~~`PUT /api/tasks/:id`~~ [06/10/2025]

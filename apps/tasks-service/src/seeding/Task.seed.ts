@@ -1,7 +1,8 @@
 import { ConfigService } from "@nestjs/config";
 import { DataSource, DataSourceOptions } from "typeorm";
 import { runSeeders, SeederOptions } from "typeorm-extension";
-import { InitSeeder } from "./seed/Init.seeder";
+import { TestSeeder } from "./seed/Task.seeder";
+import { TasksFactory } from "./factories/Tasks.factory";
 import { config } from 'dotenv';
 config();
 
@@ -16,7 +17,8 @@ const options: DataSourceOptions & SeederOptions = {
 	database: configService.get<string>('database'),
 	synchronize: false,
 	entities: ['**/*.entity.ts'],
-	seeds: [InitSeeder],
+	seeds: [TestSeeder],
+	factories: [TasksFactory],
 }
 
 const datasource = new DataSource(options);

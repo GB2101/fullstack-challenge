@@ -2,13 +2,13 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Priority, Status, Tasks } from 'src/entities';
-import { CreateTasks, UpdateTasks } from './validations';
+import { Priority, Status, Task } from 'src/entities';
+import { CreateTasks, UpdateTasks, SearchTasks } from './validations';
 
 @Injectable()
 export class TasksService {
 	constructor(
-		@InjectRepository(Tasks) private tasksDB: Repository<Tasks>,
+		@InjectRepository(Task) private tasksDB: Repository<Task>,
 		@InjectRepository(Status) private statusDB:Repository<Status>,
 		@InjectRepository(Priority) private priorityDB: Repository<Priority>,
 	) {}
@@ -54,6 +54,18 @@ export class TasksService {
 
 		if (!task) throw new RpcException(`Task com ID ${id} não encontrado`);
 		return task;
+	}
+
+	async search(params: SearchTasks) {
+		const offset = (params.page - 1) * params.size;
+		return await this.tasksDB.findAndCount({
+			skip: offset,
+			take: params.size,
+			relations: {
+				status: true,
+				priority: true,
+			}
+		});
 	}
 
 	private async getStatus(id: number | undefined) {

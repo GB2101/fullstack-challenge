@@ -1,9 +1,9 @@
 import { Column, CreateDateColumn, ManyToOne, Entity, PrimaryColumn, BeforeInsert } from "typeorm";
 import { Priority, Status } from "./index";
-import { NanoID } from "src/utils/Nanoid";
+import { NanoID } from "../utils/Nanoid";
 
 @Entity()
-export class Tasks {
+export class Task {
 	@PrimaryColumn()
 		id: string;
 	

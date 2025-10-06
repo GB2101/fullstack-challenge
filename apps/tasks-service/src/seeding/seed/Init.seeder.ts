@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { Seeder } from "typeorm-extension";
-import { Priority, Status } from "../entities";
+import { Priority, Status } from "../../entities";
 
 export class InitSeeder implements Seeder {
 	async run(dataSource: DataSource) {

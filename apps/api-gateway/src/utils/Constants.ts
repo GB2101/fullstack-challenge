@@ -11,3 +11,10 @@ export const LENGTHS = {
 		title: 5,
 	}
 }
+
+export const DEFAULTS = {
+	SearchParams: {
+		page: 1,
+		size: 10,
+	}
+}

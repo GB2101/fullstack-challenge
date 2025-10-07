@@ -1,6 +1,23 @@
 name: fullstack
 
 services:
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+      target: development
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - ./packages:/app/packages
+      - /app/node_modules
+      - /app/apps/api-gateway/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - challenge-network
   api-gateway:
     container_name: api-gateway
     build:

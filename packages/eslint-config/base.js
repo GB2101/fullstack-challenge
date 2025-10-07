@@ -19,7 +19,7 @@ export const config = [
 		},
 		rules: {
 			'turbo/no-undeclared-env-vars': 'off',
-			't@typescript-eslint/no-unsafe-call': 'off',
+			'@typescript-eslint/no-unsafe-call': 'off',
 			indent: ['error', 'tab'],
 		},
 	},

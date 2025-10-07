@@ -3,10 +3,12 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
+		"build:web": "turbo run build --filter=web",
 		"build:api": "turbo run build --filter=api-gateway",
 		"build:auth": "turbo run build --filter=auth-service",
 		"build:tasks": "turbo run build --filter=tasks-service",
 		"dev": "turbo run dev",
+		"dev:web": "turbo run dev --filter=web",
 		"dev:api": "turbo run dev --filter=api-gateway",
 		"dev:auth": "turbo run dev --filter=auth-service",
 		"dev:tasks": "turbo run dev --filter=tasks-service",

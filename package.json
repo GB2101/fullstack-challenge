@@ -12,6 +12,9 @@
 		"dev:api": "turbo run dev --filter=api-gateway",
 		"dev:auth": "turbo run dev --filter=auth-service",
 		"dev:tasks": "turbo run dev --filter=tasks-service",
+		"seed": "npm run seed -w tasks-service",
+		"migration": "npm run migration -w auth-service -w tasks-service",
+		"migration:generate": "npm run migration:generate -w auth-service -w tasks-service",
 		"lint": "turbo run lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"check-types": "turbo run check-types"

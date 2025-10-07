@@ -1,10 +1,20 @@
+import path from "path"
+import tailwindcss from "@tailwindcss/vite"
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
 	base: "/",
-	plugins: [react()],
+	plugins: [
+		tanstackRouter({
+			target: 'react',
+			autoCodeSplitting: true,
+		}),
+		react(),
+		tailwindcss(),
+	],
 	preview: {
 		port: parseInt(process.env.port ?? '3000'),
 		strictPort: true,
@@ -14,5 +24,10 @@ export default defineConfig({
 		strictPort: true,
 		host: true,
 		origin: "http://0.0.0.0:8080",
+	},
+	resolve: {
+		alias: {
+			"@": path.resolve(__dirname, "./src"),
+		},
 	},
 });

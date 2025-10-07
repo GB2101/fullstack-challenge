@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Priority, Status } from 'src/entities';
 import { Repository } from 'typeorm';
 
+type ID = number | undefined;
+
 @Injectable()
 export class InfoService {
 	constructor(
@@ -19,7 +21,14 @@ export class InfoService {
 		return await this.priorityDB.find();
 	}
 
-	async getStatus(id: number | undefined) {
+	async getInfo(status: ID, priority: ID) {
+		return await Promise.all([
+			this.getStatus(status),
+			this.getPriority(priority),
+		]);
+	}
+
+	async getStatus(id: ID) {
 		if (!id) return undefined;
 
 		const status = await this.statusDB.findOneBy({ id });
@@ -28,7 +37,7 @@ export class InfoService {
 		return status;
 	}
 	
-	async getPriority(id: number | undefined) {
+	async getPriority(id: ID) {
 		if (!id) return undefined;
 		
 		const priority = await this.priorityDB.findOneBy({ id });

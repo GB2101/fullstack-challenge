@@ -3,24 +3,29 @@ import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/entities';
-import { CreateTasks, Pagination, UpdateTasks } from './validations';
 import { InfoService } from '../info/info.service';
+import { HistoryService } from '../history/history.service';
+import { CreateTasks, Pagination, UpdateTasks } from './validations';
 
 @Injectable()
 export class TasksService {
 	constructor(
 		private readonly infoService: InfoService,
+		private readonly historyService: HistoryService,
 		@InjectRepository(Task) private tasksDB: Repository<Task>,
 	) {}
 	
 	async create(data: CreateTasks) {
-		const status = await this.infoService.getStatus(data.statusID);
-		const priority = await this.infoService.getPriority(data.priorityID);
-
-		const deadline = new Date(data.deadline);
-		const createdBy = data.username;
+		const {statusID, priorityID, ...task} = data.task;
+		const [status, priority] = await this.infoService.getInfo(statusID, priorityID)
 		
-		const tasks = this.tasksDB.create({...data, createdBy, deadline, status, priority});
+		const tasks = this.tasksDB.create({
+			...task,
+			status,
+			priority,
+			createdBy: data.username,
+			editedBy: data.username,
+		});
 		return await this.tasksDB.save(tasks);
 	}
 	
@@ -30,17 +35,25 @@ export class TasksService {
 	}
 
 	async update(data: UpdateTasks) {
-		const { id } = data;
-		const validId = await this.tasksDB.existsBy({ id });
-		if (!validId) throw new RpcException(`Task com ID ${id} não encontrada`);
+		const { id, username } = data;
+		const task = await this.get(id);
 
+		const {statusID, priorityID, ...rest} = data.task;
+		const [status, priority] = await this.infoService.getInfo(statusID, priorityID);
 
-		const {statusID, priorityID, ...fields} = data.task;
-		const status = await this.infoService.getStatus(statusID);
-		const priority = await this.infoService.getPriority(priorityID);
+		const fields = {
+			...rest,
+			status,
+			priority,
+		}
 
+		await this.historyService.save({
+			task,
+			username,
+			edition: fields,
+		});
 
-		await this.tasksDB.update(id, {...fields, status, priority});
+		await this.tasksDB.update(id, {...fields, editedBy: username});
 		return await this.get(id);
 	}
 

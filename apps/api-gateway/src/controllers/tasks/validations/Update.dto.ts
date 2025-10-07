@@ -5,5 +5,6 @@ export class UpdateTasks extends PartialType(CreateTasks) {}
 
 export type UpdateTasksReq = {
 	id: string;
+	username: string;
 	task: UpdateTasks;
 }

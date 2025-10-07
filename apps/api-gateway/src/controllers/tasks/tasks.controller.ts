@@ -25,8 +25,8 @@ export class TasksController {
 		console.log(`[API GATEWAY]: Register Task request ${body.title}`);
 
 		const data: CreateTasksReq = {
-			...body,
 			username: req.user.sub,
+			task: body,
 		}
 
 		return await this.tasksProxy.send<CreateResponse, CreateTasksReq>('tasks-create', data, {op: 'create'});
@@ -45,12 +45,13 @@ export class TasksController {
 	@ApiOperation({summary: 'Atualiza uma Task'})
 	@ApiOkResponse({description: 'Task atualizada com sucesso', type: TasksResponse})
 	@ApiNotFoundResponse({description: 'ID não encontrado'})
-	async update(@Param('id') id: string, @Body() body: UpdateTasks) {
+	async update(@Request() req: Authorization, @Param('id') id: string, @Body() body: UpdateTasks) {
 		console.log(`[API GATEWAY]: Update Task request ${id}`);
 
 		const data: UpdateTasksReq = {
 			id,
 			task: body,
+			username: req.user.sub,
 		}
 		const options: ProxyOptions = {
 			op: 'update',

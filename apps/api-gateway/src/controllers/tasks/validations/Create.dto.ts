@@ -34,6 +34,7 @@ export class CreateTasks {
 		users?: string[];
 }
 
-export type CreateTasksReq = CreateTasks & {
+export type CreateTasksReq = {
 	username: string;
+	task: CreateTasks;
 }

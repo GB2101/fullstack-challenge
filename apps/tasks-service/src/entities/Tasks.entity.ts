@@ -9,6 +9,9 @@ export class Task {
 
 	@Column()
 		createdBy: string;
+	
+	@Column({default: 'admin'})
+		editedBy: string;
 
 	@Column()
 		title: string;

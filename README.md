@@ -9,6 +9,7 @@
 - auth-register
 - auth-login
 - auth-refresh
+- users-list
 
 ### Tasks Service
 
@@ -22,6 +23,8 @@
 
 - comments-create
 - comments-list
+
+- history-list
 
 ## Decisões Técnicas
 

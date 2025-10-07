@@ -10,8 +10,8 @@ import type { Authorization } from 'src/types';
 @ApiBearerAuth()
 @ApiTags('Comentários')
 @UseGuards(JwtAuthGuard)
-@Controller('tasks/:id/comments')
 @ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
+@Controller('tasks/:id/comments')
 export class CommentsController {
 	private taskProxy: Proxy
 	constructor(@Inject(SERVICES.TASKS) private tasksClient: ClientProxy) {

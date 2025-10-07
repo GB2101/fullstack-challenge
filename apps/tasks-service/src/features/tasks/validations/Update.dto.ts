@@ -1,6 +1,7 @@
-import { CreateTasks } from "./Create.dto";
+import { CreateData } from "./Create.dto";
 
 export type UpdateTasks = {
 	id: string;
-	task: Partial<CreateTasks>;
+	username: string;
+	task: Partial<CreateData>;
 }

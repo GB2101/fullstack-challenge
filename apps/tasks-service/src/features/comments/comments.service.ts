@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment, Task } from 'src/entities';
 import { Repository } from 'typeorm';
-import { CreateComment, Pagination, SearchComment } from './validations';
+import { CreateComment, SearchComment } from './validations';
 import { RpcException } from '@nestjs/microservices';
 
 @Injectable()

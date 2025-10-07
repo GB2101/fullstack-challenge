@@ -1,9 +1,13 @@
-export type CreateTasks = {
-	username: string;
-	users?: string[];
+export type CreateData = {
 	title: string;
 	description: string;
-	deadline: string;
+	deadline: Date;
+	users?: string[];
 	priorityID: number;
 	statusID: number;
+}
+
+export type CreateTasks = {
+	username: string;
+	task: CreateData;
 }

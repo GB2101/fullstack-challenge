@@ -26,4 +26,10 @@ export class AuthController {
 		const token = await this.authService.refresh(username);
 		return { token };
 	}
+
+	@MessagePattern('users-list')
+	async users() {
+		console.log('[AUTH SERVICE]: List Users');
+		return await this.authService.users();
+	}
 }

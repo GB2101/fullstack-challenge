@@ -50,4 +50,10 @@ export class AuthService {
 		const payload = { sub: username };
 		return this.jwtService.sign(payload);
 	}
+
+	async users() {
+		return await this.userDB.find({
+			select: ['username', 'email']
+		});
+	}
 }

@@ -1,13 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Inject, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
 import { LoginUser, RegisterUser } from './validations';
 
 import { JwtPayload } from 'src/types';
 import { SERVICES } from 'src/utils/Constants';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RefreshAuthGuard } from 'src/guards/refresh-auth.guard';
 import { LoginResponse, RegisterResponse, RefreshResponse } from './types';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Proxy, ProxyOptions } from 'src/utils';
+import { UserResponse } from './types/User';
 
 @ApiTags('Autenticação')
 @Controller('auth')
@@ -60,5 +62,15 @@ export class AuthController {
 		}
 		
 		return await this.authProxy.send<RefreshResponse, string>('auth-refresh', req.user.sub, options);
+	}
+
+	@Get('users')
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
+	@ApiOperation({summary: 'Lista usuários cadastrados'})
+	@ApiOkResponse({description: 'Lista de usuários', type: UserResponse, isArray: true})
+	async users() {
+		console.log('[API GATEWAY]: List Users');
+		return await this.authProxy.send<UserResponse>('users-list');
 	}
 }

@@ -1,17 +1,28 @@
-// export interface Task {
-// 	id: string;
-// 	title: string;
-// 	description?: string;
-// 	status: 'To Do' | 'In Progress' | 'Done';
-// 	priority: 'Low' | 'Medium' | 'High';
-// 	dueDate?: string; // ISO date string
-// 	createdAt: string; // ISO date string
-// 	updatedAt: string; // ISO date string
-// }
+export interface Task {
+	id: string;
+	title: string;
+	description?: string;
+	createdBy: string;
+	editedBy: string;
+	deadline: string; // ISO date string
+	creationDate: string; // ISO date string
+	users: null | string[];
+	status: {
+		id: number,
+		name: string,
+	},
+	priority: {
+		id: number,
+		name: string,
+		level: number,
+	},
+}
+
 export interface TaskPrompt {
 	id: string;
 	title: string;
 	deadline: string; // ISO date string
+	users?: string[];
 	status: {
 		id: string;
 		name: string;

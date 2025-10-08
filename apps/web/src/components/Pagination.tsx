@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import { useState, type FC } from 'react';
 import { getPaginationFormat } from '@/lib/pagination';
 import {
 	Pagination as PaginationBase,
@@ -11,18 +11,7 @@ import {
 } from './ui/pagination';
 
 
-type ActiveProps = {
-	active: boolean;
-	children: React.ReactNode;
-}
-
-const Active: FC<ActiveProps> = (props) => {
-	if (!props.active) {
-		return <></>;
-	}
-
-	return (<>{props.children}</>);
-};
+import { Active } from './index';
 
 
 type ItemProps = {
@@ -51,18 +40,24 @@ const ItemPage: FC<ItemProps> = (props) => {
 type PaginationProps = {
 	pages: number;
 	current?: number;
-	onPageChange: (page: number) => void;
+	onPageChange?: (page: number) => void;
 }
 
-export const Pagination: FC<PaginationProps> = props => {
-	const format = getPaginationFormat(props.pages, props.current || 1);
+export const Pagination: FC<PaginationProps> = (props) => {
+	const [page, setPage] = useState(props.current || 1);
+	const format = getPaginationFormat(props.pages, page);
+
+	const changePage = (newPage: number) => {
+		setPage(newPage);
+		props.onPageChange?.(newPage);
+	}
 
 	return (
-		<PaginationBase className='justify-self-end'>
+		<PaginationBase className='justify-self-end h-fit'>
 			<PaginationContent>
 				<Active active={format.buttons.prev}>
 					<PaginationItem>
-						<PaginationPrevious onClick={() => props.onPageChange(format.active - 1)} />
+						<PaginationPrevious onClick={() => changePage(format.active - 1)} />
 					</PaginationItem>
 				</Active>
 
@@ -70,7 +65,7 @@ export const Pagination: FC<PaginationProps> = props => {
 				<ItemPage 
 					page={1}
 					active={format.limits.start}
-					handleClick={props.onPageChange}
+					handleClick={changePage}
 				/>
 
 
@@ -87,7 +82,7 @@ export const Pagination: FC<PaginationProps> = props => {
 						key={page}
 						page={page}
 						current={format.active}
-						handleClick={props.onPageChange}
+						handleClick={changePage}
 					/>
 				))}
 
@@ -102,13 +97,13 @@ export const Pagination: FC<PaginationProps> = props => {
 				<ItemPage 
 					page={10}
 					active={format.limits.end}
-					handleClick={props.onPageChange}
+					handleClick={changePage}
 				/>
 
 
 				<Active active={format.buttons.next}>
 					<PaginationItem>
-						<PaginationNext onClick={() => props.onPageChange(format.active + 1)} />
+						<PaginationNext onClick={() => changePage(format.active + 1)} />
 					</PaginationItem>
 				</Active>
 			</PaginationContent>

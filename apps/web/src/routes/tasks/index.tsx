@@ -21,18 +21,30 @@ function RouteComponent() {
 	];
 	
 	return (
-		<div className='h-screen flex flex-col'>
+		<SideBar>
 			<MultiTaskList>
 				<TaskList title='To Do'>
 					<TaskCard task={tasks[0]} />
 					<TaskCard task={tasks[1]} />
 					<TaskCard task={tasks[2]} />
+					<TaskCard task={tasks[3]} />
+					<TaskCard task={tasks[4]} />
+					<TaskCard task={tasks[0]} />
+					<TaskCard task={tasks[1]} />
+					<TaskCard task={tasks[2]} />
+					<TaskCard task={tasks[3]} />
+					<TaskCard task={tasks[4]} />
+					<TaskCard task={tasks[0]} />
+					<TaskCard task={tasks[1]} />
+					<TaskCard task={tasks[2]} />
+					<TaskCard task={tasks[3]} />
+					<TaskCard task={tasks[4]} />
 				</TaskList>
 				<TaskList title='In PROGRESS'>
 					<TaskCard task={tasks[3]} />
 					<TaskCard task={tasks[4]} />
 				</TaskList>
 			</MultiTaskList>
-		</div>
+		</SideBar>
 	)
 }

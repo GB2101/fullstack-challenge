@@ -60,12 +60,12 @@
 
 ## Front-end
 
-- [ ] **React.js** com **TanStack Router**.
-- [ ] **UI:** mínimo 5 componentes com **shadcn/ui** + **Tailwind CSS**.
+- [x] ~~**React.js** com **TanStack Router**.~~ [08/10/2025]
+- [x] ~~**UI:** mínimo 5 componentes com **shadcn/ui** + **Tailwind CSS**.~~ [08/10/2025]
 - [ ] **Páginas obrigatórias:**
-    - [ ] Login/Register com validação (Pode ser um modal)
-    - [ ] Lista de tarefas com filtros e busca
-    - [ ] Detalhe da tarefa com comentários
+    - [x] ~~Login/Register com validação (Pode ser um modal)~~ [08/10/2025]
+    - [x] ~~Lista de tarefas com filtros e busca~~ [08/10/2025]
+    - [x] ~~Detalhe da tarefa com comentários~~ [08/10/2025]
 - [ ] **Estado:** Context API ou Zustand para auth.
 - [ ] **WebSocket:** conexão para notificações em tempo real.
 - [ ] **Validação:** `react-hook-form` + `zod`.

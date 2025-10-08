@@ -1,5 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Link } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@radix-ui/react-label'
@@ -13,7 +12,7 @@ import {
 } from '@/components/ui/card'
 
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/register')({
 	component: RouteComponent,
 })
 
@@ -24,7 +23,7 @@ function RouteComponent() {
 				<CardHeader>
 					<CardTitle>Acesso o TaskFlow</CardTitle>
 					<CardDescription>
-						Faça login com seu email para acessar sua conta
+						Faça seu cadastro para começar a usar o TaskFlow
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -40,6 +39,15 @@ function RouteComponent() {
 								/>
 							</div>
 							<div className="grid gap-2">
+								<Label htmlFor="email">Email</Label>
+								<Input
+									id="email"
+									type="email"
+									placeholder="example@email.com"
+									required
+								/>
+							</div>
+							<div className="grid gap-2">
 								<div className="flex items-center">
 									<Label htmlFor="password">Password</Label>
 								</div>
@@ -50,10 +58,10 @@ function RouteComponent() {
 				</CardContent>
 				<CardFooter className="flex-col gap-2">
 					<Button asChild type="submit" className="w-full">
-						<Link to='/tasks'>Login</Link>
+						<Link to="/tasks">Concluir</Link>
 					</Button>
 					<Button asChild variant="outline" className="w-full">
-						<Link to="/register">Sign up</Link>
+						<Link to="/login">Já está cadastrado?</Link>
 					</Button>
 				</CardFooter>
 			</Card>

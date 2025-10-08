@@ -18,7 +18,7 @@ export class HistoryController {
 
 	@Get()
 	@ApiOperation({summary: 'Lista o histórico de edições da Task'})
-	@ApiOkResponse({description: 'Histórico retornado', type: HistoryResponse})
+	@ApiOkResponse({description: 'Histórico retornado', type: HistoryResponse, isArray: true})
 	@ApiNotFoundResponse({description: 'ID não encontrado'})
 	async history(@Param('id') id: string) {
 		console.log('[API GATEWAY]: Get Task History');

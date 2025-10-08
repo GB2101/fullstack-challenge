@@ -34,16 +34,9 @@ export class AuthController {
 	@HttpCode(HttpStatus.OK)
 	@ApiOperation({summary: 'Valida informações e loga um usuário no sistema'})
 	@ApiOkResponse({description: 'Usuário logado com sucesso', type: LoginResponse})
-	@ApiUnauthorizedResponse({description: 'Usuário não autorizado.'})
 	async login(@Body() body: LoginUser) {
 		console.log(`[API GATEWAY]: Login User request ${body.username}`);
-
-		const options: ProxyOptions = {
-			op: 'login',
-			code: HttpStatus.UNAUTHORIZED,
-		};
-
-		return await this.authProxy.send<LoginResponse, LoginUser>('auth-login', body, options);
+		return await this.authProxy.send<LoginResponse, LoginUser>('auth-login', body, { op: 'login' });
 	}
 
 
@@ -52,16 +45,9 @@ export class AuthController {
 	@ApiBearerAuth()
 	@ApiOperation({summary: 'Gera um novo token de acesso'})
 	@ApiOkResponse({description: 'Novo token gerado com sucesso', type: RefreshResponse})
-	@ApiUnauthorizedResponse({description: 'Usuário não autorizado.'})
 	async refresh(@Request() req: { user: JwtPayload }) {
-		console.log(`[API GATEWAY]: Refresh Token request ${req.user.sub}`);
-
-		const options: ProxyOptions = {
-			op: 'refresh',
-			code: HttpStatus.UNAUTHORIZED,
-		}
-		
-		return await this.authProxy.send<RefreshResponse, string>('auth-refresh', req.user.sub, options);
+		console.log(`[API GATEWAY]: Refresh Token request ${req.user.sub}`);		
+		return await this.authProxy.send<RefreshResponse, string>('auth-refresh', req.user.sub, { op: 'refresh' });
 	}
 
 	@Get('users')

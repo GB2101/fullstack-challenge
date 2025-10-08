@@ -19,8 +19,10 @@ export class Proxy {
 			const code = options?.code ?? HttpStatus.BAD_REQUEST;
 			const prefix = `[${this.name.toUpperCase()} ${options?.op.toUpperCase() ?? 'REQUEST'}]`;
 
+			const [field, message] = error.message.split(': ');
+
 			console.error(`<-- ERROR --> ${prefix}`, error);
-			throw new HttpException(error.message, code);
+			throw new HttpException({field, message}, code);
 		}
 	}
 }

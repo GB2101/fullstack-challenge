@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsAlphanumeric, IsEmail, IsString, IsStrongPassword, Length } from "class-validator";
+import { IsAlphanumeric, IsEmail, IsString, Length } from "class-validator";
 import { LENGTHS } from "src/utils/Constants";
 
 
@@ -10,13 +10,13 @@ export class RegisterUser {
 		email: string;
 	
 	@IsString()
-	@IsAlphanumeric()
-	@Length(LENGTHS.username)
+	@IsAlphanumeric(undefined, { message: 'Username deve conter apenas letras e números' })
+	@Length(LENGTHS.username, undefined, { message: `Username deve ter no mínimo ${LENGTHS.username} caracteres` })
 	@ApiProperty({example: 'username', minLength: LENGTHS.username})
 		username: string;
 	
 	@IsString()
-	@IsStrongPassword()
+	@Length(LENGTHS.password, undefined, { message: `Senha deve ter no mínimo ${LENGTHS.password} caracteres` })
 	@ApiProperty({example: 'password', minLength: LENGTHS.password})
 		password: string;
 }

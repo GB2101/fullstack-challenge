@@ -75,6 +75,7 @@ export class TasksService {
 		return await this.tasksDB.findAndCount({
 			skip: offset,
 			take: params.size,
+			select: ['id', 'title', 'deadline', 'status', 'priority'],
 			relations: {
 				status: true,
 				priority: true,

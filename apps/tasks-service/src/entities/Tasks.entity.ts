@@ -10,7 +10,7 @@ export class Task {
 	@Column()
 		createdBy: string;
 	
-	@Column({default: 'admin'})
+	@Column()
 		editedBy: string;
 
 	@Column()

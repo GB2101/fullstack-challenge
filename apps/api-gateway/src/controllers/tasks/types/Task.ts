@@ -7,6 +7,9 @@ export class TasksResponse {
 
 	@ApiProperty({example: 'username'})
 		createdBy: string;
+	
+	@ApiProperty({example: 'username'})
+		editedBy: string;
 
 	@ApiProperty({example: 'title'})
 		title: string;

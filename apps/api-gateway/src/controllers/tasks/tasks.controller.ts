@@ -3,7 +3,7 @@ import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNoContentR
 import { ClientProxy } from '@nestjs/microservices';
 import { DEFAULTS, SERVICES } from 'src/utils/Constants';
 import { CreateTasks, UpdateTasks, Pagination, CreateTasksReq, UpdateTasksReq } from './validations';
-import { CreateResponse, SearchResponse, TasksResponse } from './types';
+import { CreateTaskResponse, SearchTaskResponse, TasksResponse } from './types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Proxy, ProxyOptions } from 'src/utils';
 import type { Authorization } from 'src/types';
@@ -20,7 +20,7 @@ export class TasksController {
 
 	@Post()
 	@ApiOperation({summary: 'Cria uma nova task'})
-	@ApiCreatedResponse({description: 'Task criada com sucesso',type: CreateResponse})
+	@ApiCreatedResponse({description: 'Task criada com sucesso',type: CreateTaskResponse})
 	async create(@Request() req: Authorization, @Body() body: CreateTasks) {
 		console.log(`[API GATEWAY]: Register Task request ${body.title}`);
 
@@ -29,7 +29,7 @@ export class TasksController {
 			task: body,
 		}
 
-		return await this.tasksProxy.send<CreateResponse, CreateTasksReq>('tasks-create', data, {op: 'create'});
+		return await this.tasksProxy.send<CreateTaskResponse, CreateTasksReq>('tasks-create', data, {op: 'create'});
 	}
 
 	@Delete(':id')
@@ -78,7 +78,7 @@ export class TasksController {
 
 	@Get()
 	@ApiOperation({summary: 'Lista as Tasks existentes'})
-	@ApiOkResponse({description: 'Lista de Tasks retornada', type: SearchResponse})
+	@ApiOkResponse({description: 'Lista de Tasks retornada', type: SearchTaskResponse})
 	async search(@Query() query: Pagination) {
 		console.log(`[API GATEWAY]: Search Tasks request`);
 
@@ -87,6 +87,6 @@ export class TasksController {
 			size: query.size ?? DEFAULTS.SearchParams.size,
 		};
 
-		return await this.tasksProxy.send<SearchResponse>('tasks-search', data, {op: 'search'});
+		return await this.tasksProxy.send<SearchTaskResponse>('tasks-search', data, {op: 'search'});
 	}
 }

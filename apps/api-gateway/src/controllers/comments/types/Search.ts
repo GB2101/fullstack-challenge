@@ -14,7 +14,7 @@ class CommentResponse {
 		timestamp: Date;
 }
 
-export class SearchResponse {
+export class SearchCommentResponse {
 	@ApiProperty({example: 10, description: 'A quantidade de itens retornado na busca'})
 		length: number;
 	

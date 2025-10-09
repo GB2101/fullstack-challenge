@@ -19,7 +19,6 @@ export const LogsTab: FC<LogProps> = (props) => {
 		queryKey: ['logs', props.taskId],
 		queryFn: async () => {
 			const { data } = await axios.get<Log[]>(`/tasks/${props.taskId}/history`);
-			console.log(data)
 			return data;
 		},
 	});

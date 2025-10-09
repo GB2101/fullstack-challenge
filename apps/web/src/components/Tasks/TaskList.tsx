@@ -41,7 +41,7 @@ export const TaskList: FC<TaskListProps> = (props) => (
 		</CardContent>
 		<CardFooter className='flex-1 px-4'>
 			<Button variant='outline' className='w-full cursor-pointer' asChild>
-				<Link to='.' search={(prev) => ({ ...prev, open: true, insert: true, statusId: props.id })}>
+				<Link to='.' search={(prev) => ({ ...prev, open: true, statusId: props.id })}>
 					Criar Task
 				</Link>
 			</Button>

@@ -50,10 +50,10 @@ function RouteComponent() {
 	const { mutate } = useMutation({
 		mutationFn: async () => await axios.delete(`/tasks/${taskId}`),
 		onSuccess: () => {
+			handleClose();
 			queryClient.invalidateQueries({ queryKey: ['tasks'] });
 			queryClient.invalidateQueries({ queryKey: ['search'] });
 			queryClient.invalidateQueries({ queryKey: ['task', taskId] });
-			handleClose();
 		},
 		onError: (error) => console.error('Error deleting task:', error),
 	});

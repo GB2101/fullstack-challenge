@@ -27,7 +27,6 @@ export const useAxios = () => {
 			}
 		
 			if (error.response.status !== 401) return Promise.reject(error);
-			// if (error.response.data?.code !== 'token.expired') return Promise.reject(error);
 
 			const originalConfig = error.config!;
 			if (!isRefreshing) {
@@ -74,30 +73,3 @@ export const useAxios = () => {
 
 	return instance;
 };
-
-
-// instance.interceptors.response.use(response => response, async err => {
-// 	const error = err as AxiosError<{ message: string | string[], field?: string }>;
-
-// 	if (!error.response) {
-// 		console.log(error);
-// 		return Promise.reject(error);
-// 	}
-
-// 	if (error.response?.status === 401) {
-// 		const state = useAuthStore.getState();
-// 		const { logout, refreshToken, setToken } = state;
-		
-// 		if (!refreshToken) logout();
-		
-// 		try {
-// 			const { data } = await instance.post<{token: string}>('/auth/refresh', { refreshToken });
-// 			setToken(data.token);
-// 		} catch {
-// 			logout();
-// 			return Promise.reject(error);
-// 		}
-// 	}
-
-// 	return Promise.reject(error);
-// });

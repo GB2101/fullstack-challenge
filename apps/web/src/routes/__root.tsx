@@ -2,11 +2,12 @@ import { useEffect } from 'react'
 import { createRootRoute, Outlet, useNavigate } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { ThemeProvider } from '@/components/ThemeProvider'
 
 import { useAxios } from '@/hooks/useAxios'
 import { useAuthStore, useInfoStore } from '@/stores'
+import { SocketProvider, ThemeProvider } from '@/components'
 import type { Status, Priority } from '@/stores/InfoStore'
+
 
 type InfoResponse = {
 	status: Status[];
@@ -18,9 +19,8 @@ export type UserResponse = Array<{
 	email: string;
 }>;
 
+
 const queryClient = new QueryClient();
-
-
 const RootLayout = () => {
 	const axios = useAxios();
 	const { status, priorities, users, setInfo, setUsers } = useInfoStore();
@@ -57,9 +57,10 @@ const RootLayout = () => {
 		<QueryClientProvider client={queryClient}>
 			<ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
 				<div className='h-screen w-screen bg-gradient-to-br from-background via-accent to-card'>
-					<Outlet />
+					<SocketProvider>
+						<Outlet />
+					</SocketProvider>
 				</div>
-				{/* <TanStackRouterDevtools /> */}
 			</ThemeProvider>
 		</QueryClientProvider>
 	);

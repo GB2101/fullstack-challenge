@@ -14,7 +14,10 @@ import type { Authorization } from 'src/types';
 @Controller('tasks/:id/comments')
 export class CommentsController {
 	private taskProxy: Proxy
-	constructor(@Inject(SERVICES.TASKS) private tasksClient: ClientProxy) {
+	constructor(
+		@Inject(SERVICES.TASKS) private tasksClient: ClientProxy,
+		@Inject(SERVICES.NOTIFICATIONS) private notifyClient: ClientProxy,
+	) {
 		this.taskProxy = new Proxy(this.tasksClient, 'comments');
 	}
 
@@ -35,7 +38,9 @@ export class CommentsController {
 			username: req.user.sub,
 		};
 
-		return await this.taskProxy.send<CreateCommentResponse, CreateCommentReq>('comments-create', data, options);
+		const response = await this.taskProxy.send<CreateCommentResponse, CreateCommentReq>('comments-create', data, options);
+		this.notifyClient.emit('task.comment.created', response);
+		return response;
 	}
 
 	@Get()

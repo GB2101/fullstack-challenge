@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Pos
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
 import { DEFAULTS, SERVICES } from 'src/utils/Constants';
-import { CreateTasks, UpdateTasks, Pagination, CreateTasksReq, UpdateTasksReq, SearchTasks } from './validations';
-import { CreateTaskResponse, SearchTaskResponse, TasksResponse } from './types';
+import { CreateTasks, UpdateTasks, CreateTasksReq, UpdateTasksReq, SearchTasks } from './validations';
+import { SearchTaskResponse, TasksResponse } from './types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Proxy, ProxyOptions } from 'src/utils';
 import type { Authorization } from 'src/types';
@@ -14,13 +14,16 @@ import type { Authorization } from 'src/types';
 @ApiBadRequestResponse({description: 'Requisição falhou. Campo `message` detalhe o problema'})
 export class TasksController {
 	private tasksProxy: Proxy;
-	constructor(@Inject(SERVICES.TASKS) private tasksClient: ClientProxy) {
+	constructor(
+		@Inject(SERVICES.TASKS) private tasksClient: ClientProxy,
+		@Inject(SERVICES.NOTIFICATIONS) private notifyClient: ClientProxy,
+	) {
 		this.tasksProxy = new Proxy(this.tasksClient, 'tasks');
 	}
 
 	@Post()
 	@ApiOperation({summary: 'Cria uma nova task'})
-	@ApiCreatedResponse({description: 'Task criada com sucesso',type: CreateTaskResponse})
+	@ApiCreatedResponse({description: 'Task criada com sucesso',type: TasksResponse})
 	async create(@Request() req: Authorization, @Body() body: CreateTasks) {
 		console.log(`[API GATEWAY]: Register Task request ${body.title}`);
 
@@ -29,7 +32,10 @@ export class TasksController {
 			task: body,
 		}
 
-		return await this.tasksProxy.send<CreateTaskResponse, CreateTasksReq>('tasks-create', data, {op: 'create'});
+		const response = await this.tasksProxy.send<TasksResponse, CreateTasksReq>('tasks-create', data, {op: 'create'});
+
+		this.notifyClient.emit('task.created', response);
+		return response;
 	}
 
 	@Delete(':id')
@@ -58,7 +64,10 @@ export class TasksController {
 			code: HttpStatus.NOT_FOUND,
 		}
 
-		return await this.tasksProxy.send<TasksResponse, UpdateTasksReq>('tasks-update', data, options);
+		const response = await this.tasksProxy.send<TasksResponse, UpdateTasksReq>('tasks-update', data, options);
+
+		this.notifyClient.emit('task.updated', response);
+		return response;
 	}
 
 	@Get(':id')

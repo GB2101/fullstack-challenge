@@ -38,6 +38,16 @@ const ThrottlerLimiter = { provide: APP_GUARD, useClass: ThrottlerGuard };
 					host: process.env.tasks_host ?? 'localhost',
 					port: parseInt(process.env.tasks_port ?? '3000'),
 				}
+			}, {
+				name: SERVICES.NOTIFICATIONS,
+				transport: Transport.RMQ,
+				options: {
+					urls: [process.env.rabbitmq_url ?? 'amqp://localhost:5672'],
+					queue: process.env.rabbitmq_name ?? 'notifications_queue',
+					queueOptions: {
+						durable: true
+					}
+				}
 			}
 		]),
 	],

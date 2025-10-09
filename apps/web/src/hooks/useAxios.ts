@@ -1,42 +1,103 @@
-import axios, { AxiosError } from 'axios'
-import { useAuthStore } from '@/stores/AuthStore';
+import axios, { type AxiosError } from 'axios'
+import { useAuthStore } from '@/stores';
+import type { TokensResponse } from '@/types'
 
-const instance = axios.create({
-	baseURL: import.meta.env.VITE_API_URL,
-	timeout: Number(import.meta.env.VITE_TIMEOUT) || 1000,
-});
+type QueueItem = {onSuccess: (token: string) => void, onFailure: (error: AxiosError) => void};
+
+let isRefreshing = false;
+let failedQueue: QueueItem[] = [];
 
 
-export type Error<T = undefined> = AxiosError<{ message: string | string[], field?: T extends undefined ? string : keyof T }>;
-export const useAxios = () => instance;
 
-instance.interceptors.response.use(response => response, async err => {
-	const error = err as AxiosError<{ message: string | string[], field?: string }>;
+export const useAxios = () => {
+	const { token, refreshToken, setTokens, logout } = useAuthStore.getState();
 
-	if (!error.response) {
-		console.log(error);
-		return Promise.reject(error);
-	}
+	const instance = axios.create({
+		baseURL: import.meta.env.VITE_API_URL,
+		timeout: Number(import.meta.env.VITE_TIMEOUT) || 1000,
+		headers: { Authorization: `Bearer ${token}` },
+	});
 
-	if (error.response?.status === 401) {
-		const state = useAuthStore.getState();
-		const { logout, setToken } = state;
-		let {refreshToken} = state;
-
-		if (!refreshToken) {
-			refreshToken = window.localStorage.getItem('refreshToken');
-		}
-
-		if (!refreshToken) logout();
+	instance.interceptors.response.use(
+		response => response,
+		(error: AxiosError) => {
+			if (!error.response) {
+				console.log(error);
+				return Promise.reject(error);
+			}
 		
-		try {
-			const { data } = await instance.post<{token: string}>('/auth/refresh', { refreshToken });
-			setToken(data.token);
-		} catch {
-			logout();
-			return Promise.reject(error);
-		}
-	}
+			if (error.response.status !== 401) return Promise.reject(error);
+			// if (error.response.data?.code !== 'token.expired') return Promise.reject(error);
 
-	return Promise.reject(error);
-});
+			const originalConfig = error.config!;
+			if (!isRefreshing) {
+				isRefreshing = true;
+				instance.post<TokensResponse>('/auth/refresh', { refreshToken })
+					.then(response => {
+						const { token, refreshToken } = response.data;
+						setTokens({ token, refreshToken });
+					
+						instance.defaults.headers['Authorization'] = `Bearer ${token}`;
+					
+						failedQueue.forEach((request) =>
+							request.onSuccess(token)
+						);
+				
+						failedQueue = [];
+					})
+					.catch(() => {
+						failedQueue.forEach((request) =>
+							request.onFailure(error)
+						);
+					
+						failedQueue = [];
+						logout();
+					})
+					.finally(() => {
+						isRefreshing = false
+					});
+			}
+			
+			return new Promise((resolve, reject) => {
+				failedQueue.push({
+					onSuccess: (token) => {
+						originalConfig.headers['Authorization'] = `Bearer ${token}`;
+						resolve(instance(originalConfig));
+					},
+					onFailure: (err) => {
+						reject(err);
+					},
+				});
+			});
+		}
+	);
+
+	return instance;
+};
+
+
+// instance.interceptors.response.use(response => response, async err => {
+// 	const error = err as AxiosError<{ message: string | string[], field?: string }>;
+
+// 	if (!error.response) {
+// 		console.log(error);
+// 		return Promise.reject(error);
+// 	}
+
+// 	if (error.response?.status === 401) {
+// 		const state = useAuthStore.getState();
+// 		const { logout, refreshToken, setToken } = state;
+		
+// 		if (!refreshToken) logout();
+		
+// 		try {
+// 			const { data } = await instance.post<{token: string}>('/auth/refresh', { refreshToken });
+// 			setToken(data.token);
+// 		} catch {
+// 			logout();
+// 			return Promise.reject(error);
+// 		}
+// 	}
+
+// 	return Promise.reject(error);
+// });

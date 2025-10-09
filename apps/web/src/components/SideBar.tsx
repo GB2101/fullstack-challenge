@@ -1,124 +1,127 @@
 import type { FC } from 'react';
-import { Label } from './ui/label';
+import { Link } from '@tanstack/react-router';
 import {
 	ListTodo,
 	CalendarClock as Today,
 	CalendarSearch as Upcoming,
 	CalendarDays as All,
-	ChevronRight
+	Hourglass
 } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
 import {
 	Sidebar,
 	SidebarContent,
+	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupContent,
 	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
-	SidebarMenuAction,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarMenuSub,
-	SidebarMenuSubButton,
-	SidebarMenuSubItem,
 	SidebarProvider
 } from './ui/sidebar';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
+
+import { useAuthStore } from '@/stores';
 
 type SidebarItemProps = {
+	asChild?: boolean;
 	children: React.ReactNode;
 }
 
 const SidebarItem: FC<SidebarItemProps> = (props) => (
 	<SidebarMenuItem>
-		<SidebarMenuButton>
+		<SidebarMenuButton asChild={props.asChild}>
 			{props.children}
 		</SidebarMenuButton>
 	</SidebarMenuItem>
 );
 
-const SidebarSubItem: FC<SidebarItemProps> = (props) => (
-	<SidebarMenuSubItem>
-		<SidebarMenuSubButton>
-			{props.children}
-		</SidebarMenuSubButton>
-	</SidebarMenuSubItem>
-);
-
 
 type SidebarProps = {
-	expanded?: boolean;
 	children: React.ReactNode;
 }
 
-export const SideBar: FC<SidebarProps> = (props) => (
-	<SidebarProvider className='h-full'>
-		<Sidebar collapsible='none'>
-			<SidebarHeader className='flex flex-row items-center gap-3'>	
-				<ListTodo />
-				<p className='font-bold text-2xl'>TaskFlow</p>
-			</SidebarHeader>
+export const SideBar: FC<SidebarProps> = (props) => {
+	const { logout } = useAuthStore();
 
-			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupLabel className='text-sm'>
-						Suas Tasks
-					</SidebarGroupLabel>
+	return (
+		<SidebarProvider className='h-full'>
+			<Sidebar collapsible='none'>
+				<SidebarHeader className='flex flex-row items-center gap-3'>
+					<ListTodo />
+					<p className='font-bold text-2xl'>TaskFlow</p>
+				</SidebarHeader>
 
-					<SidebarGroupContent>
-						<SidebarMenu>
-							<SidebarItem>
-								<Today /> Para Hoje
-							</SidebarItem>
-							<SidebarItem>
-								<Upcoming /> Para esta Semana
-							</SidebarItem>
-							<SidebarItem>
-								<All /> Todos
-							</SidebarItem>
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
+				<SidebarContent>
+					<SidebarGroup>
+						<SidebarGroupLabel className='text-sm'>
+							Suas Tasks
+						</SidebarGroupLabel>
 
-				<SidebarGroup>
-					<SidebarGroupLabel className='text-sm'>
-						Filtros
-					</SidebarGroupLabel>
+						<SidebarGroupContent>
+							<SidebarMenu>
+								<SidebarItem asChild>
+									<Link to='/tasks' search={{time: 'today'}}>
+										<Today /> Para Hoje
+									</Link>
+								</SidebarItem>
 
-					<SidebarGroupContent>
-						<SidebarMenu>
-							<Collapsible defaultOpen={props.expanded ?? false} className="group/collapsible">
-								<SidebarMenuItem>
-									<CollapsibleTrigger asChild>
-										<SidebarMenuButton asChild className='text-lg'>
-											<Link to='/tasks/search'>
-												Pesquisar
-												<SidebarMenuAction>
-													<ChevronRight />
-												</SidebarMenuAction>
-											</Link>
-										</SidebarMenuButton>
-									</CollapsibleTrigger>
+								<SidebarItem asChild>
+									<Link to='/tasks' search={{time: 'week'}}>
+										<Upcoming /> Para esta Semana
+									</Link>
+								</SidebarItem>
 
-									<CollapsibleContent>
-										<SidebarMenuSub>
-											<SidebarSubItem>Por Nome</SidebarSubItem>
-											<SidebarSubItem>Por Data</SidebarSubItem>
-										</SidebarMenuSub>								
-									</CollapsibleContent>
-								</SidebarMenuItem>
-							</Collapsible>
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
-			</SidebarContent>
-		</Sidebar>
+								<SidebarItem asChild>
+									<Link to='/tasks' search={{time: 'all'}}>
+										<All /> Todas as Tasks
+									</Link>
+								</SidebarItem>
 
-		<div className='h-full flex-auto max-w-[calc(100vw-256px)]'>
-			{props.children}
-		</div>
-	</SidebarProvider>
+								<SidebarItem asChild>
+									<Link to='/tasks' search={{time: 'past'}}>
+										<Hourglass /> Tasks passadas
+									</Link>
+								</SidebarItem>
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
 
-);
+					<SidebarGroup>
+						<SidebarGroupLabel className='text-sm'>
+							Ações
+						</SidebarGroupLabel>
+
+						<SidebarGroupContent>
+							<SidebarMenu>
+								<SidebarItem asChild>
+									<Link to='/tasks/search' search={{page: 1, size: 10}}>
+										Pesquisar
+									</Link>
+								</SidebarItem>
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				</SidebarContent>
+
+				<SidebarFooter>
+					<SidebarMenu>
+						<SidebarMenuItem>
+							<SidebarMenuButton className='cursor-pointer' onClick={logout}>
+								<Link to='/login'>
+									Logout
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					</SidebarMenu>
+				</SidebarFooter>
+			</Sidebar>
+
+			<div className='h-full flex-auto max-w-[calc(100vw-256px)]'>
+				{props.children}
+			</div>
+		</SidebarProvider>
+
+	);
+};

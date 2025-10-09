@@ -1,32 +1,34 @@
-import {create } from 'zustand';
+import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-type AuthStoreState = {
+type AuthStore = {
+	username: string | null;
 	isAuthenticated: boolean;
+
 	token: string | null;
 	refreshToken: string | null;
-	username: string | null;
-};
 
-type AuthStoreActions = {
 	logout: () => void;
-	setToken: (token: string) => void;
-	setTokens: (token: string, refreshToken: string) => void;
 	setUsername: (username: string) => void;
-};
 
-type AuthStore = AuthStoreState & AuthStoreActions;
+	setTokens: (tokens: { token: string, refreshToken: string }) => void;
+};
 
 export const useAuthStore = create<AuthStore>()(persist(
 	(set) => ({
+		username: null,
 		isAuthenticated: false,
+
 		token: null,
 		refreshToken: null,
-		username: null,
-		logout: () => set({ token: null, refreshToken: null, isAuthenticated: false, username: null }),
-		setToken: (token) => set({ token, isAuthenticated: true }),
-		setTokens: (token, refreshToken) => set({ token, refreshToken, isAuthenticated: true }),
+
+		logout: () => set({ isAuthenticated: false, token: null, refreshToken: null, username: null }),
 		setUsername: (username) => set({ username }),
+
+		setTokens: (tokens) => {
+			console.log('Setting tokens');
+			set({ ...tokens, isAuthenticated: true })
+		},
 	}),
 	{
 		name: 'auth-storage', // name of the item in the storage (must be unique)

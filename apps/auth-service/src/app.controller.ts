@@ -21,10 +21,9 @@ export class AuthController {
 	}
 
 	@MessagePattern('auth-refresh')
-	async refresh(username: string) {
-		console.log(`[AUTH SERVICE]: Refresh request ${username}`);
-		const token = await this.authService.refresh(username);
-		return { token };
+	async refresh(token: string) {
+		console.log('[AUTH SERVICE]: Refresh request');
+		return await this.authService.refresh(token);
 	}
 
 	@MessagePattern('users-list')

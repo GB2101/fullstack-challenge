@@ -1,10 +1,14 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@radix-ui/react-label'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 import { CircleAlert as Warning } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { 
 	Card,
 	CardHeader,
@@ -13,13 +17,11 @@ import {
 	CardContent,
 	CardFooter,
 } from '@/components/ui/card'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+
 import { Active } from '@/components'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useEffect } from 'react'
 import { useAuthStore } from '@/stores'
-import { useAxios, type Error } from '@/hooks/useAxios'
+import { useAxios } from '@/hooks/useAxios'
+import type { TokensResponse, Error } from '@/types'
 
 
 
@@ -29,10 +31,7 @@ const registerSchema = z.object({
 	password: z.string().min(8, 'Senha deve ter no mínimo 8 caracteres'),
 });
 type RegisterInput = z.infer<typeof registerSchema>;
-type LoginResponse = { 
-	token: string,
-	refreshToken: string,
-};
+
 
 export const Route = createFileRoute('/register')({
 	component: RouteComponent,
@@ -44,9 +43,8 @@ function RouteComponent() {
 	const { isAuthenticated, setTokens, setUsername } = useAuthStore();
 	
 	useEffect(() => {
-		console.log(isAuthenticated);
 		if (isAuthenticated) {
-			navigate({ to: '/tasks' });
+			navigate({ to: '/tasks', search: { time: 'today' } });
 		}
 	}, [isAuthenticated, navigate]);
 
@@ -58,14 +56,14 @@ function RouteComponent() {
 	const onSubmit = async (input: RegisterInput) => {
 		try {
 			await axios.post('/auth/register', input);
-			const { data } = await axios.post<LoginResponse>('/auth/login', {
+			const { data } = await axios.post<TokensResponse>('/auth/login', {
 				username: input.username,
 				password: input.password,
 			});
 			
-			setTokens(data.token, data.refreshToken);
+			setTokens(data);
 			setUsername(input.username);
-			navigate({ to: '/tasks' });
+			navigate({ to: '/tasks', search: { time: 'today' } });
 		} catch (err) {
 			const error = err as Error<RegisterInput>;
 			if (!error.response) {

@@ -1,50 +1,93 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
 
-import { TopBar, TaskList, MultiTaskList, TaskCard } from '@/components'
-import { SideBar } from '@/components/SideBar'
-import type { TaskPrompt } from '@/types';
+import { useAxios } from '@/hooks/useAxios';
+import { useInfoStore, useAuthStore } from '@/stores';
+import type { TaskPrompt, SearchResults } from '@/types';
+import { SideBar, TaskList, MultiTaskList, TaskCard, TaskSheet } from '@/components'
+
+
+type TimeTypes = 'today' | 'week' | 'all' | 'past';
+type TaskListSearch = {
+	time: TimeTypes;
+	open?: boolean;
+	statusId?: number;
+};
+
+const getDeadline = (time: TimeTypes): Date | null => {
+	const today = new Date();
+
+	if (time === 'today') {
+		return new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
+	}
+
+	if (time === 'week') {
+		const day = today.getDay();
+		const diff = today.getDate() + (day === 0 ? 6 : 7 - day);
+		return new Date(today.getFullYear(), today.getMonth(), diff, 23, 59, 59);
+	}
+
+	if (time === 'past') {
+		return today;
+	}
+
+	return null;
+};
+
 
 export const Route = createFileRoute('/tasks/')({
 	component: RouteComponent,
-})
+	validateSearch: (search): TaskListSearch => ({
+		statusId: Number(search.statusId) || undefined,
+		time: search.time as TimeTypes ?? 'today',
+		open: !!search.open,
+	}),
+});
 
 function RouteComponent() {
-	const status = ['Todo', 'In PROGRESS', 'Review', 'Done'];
-	const priorities = ['Low', 'Medium', 'High', 'Urgent'];
+	const axios = useAxios();
+	const { status } = useInfoStore();
+	const { username } = useAuthStore();
 
-	const tasks: TaskPrompt[] = [
-		{ id: '1', title: 'Eiusmod ipsum et sit ex do proident enim.', deadline: '2023-09-01T12:00:00Z', status: { id: '1', name: 'TODO' }, priority: { id: '1', name: 'HIGH', level: 1 } },
-		{ id: '2', title: 'Ut mollit qui Lorem aliquip veniam.', deadline: '2023-09-02T12:00:00Z', status: { id: '2', name: 'IN_PROGRESS' }, priority: { id: '2', name: 'MEDIUM', level: 2 } },
-		{ id: '3', title: 'Veniam qui eiusmod Lorem velit sint labore do.', deadline: '2023-09-03T12:00:00Z', status: { id: '3', name: 'REVIEW' }, priority: { id: '3', name: 'LOW', level: 3 } },
-		{ id: '4', title: 'Anim mollit veniam enim nostrud incididunt velit pariatur dolore veniam.', deadline: '2023-09-04T12:00:00Z', status: { id: '4', name: 'DONE' }, priority: { id: '4', name: 'URGENT', level: 4 } },
-		{ id: '5', title: 'Officia aliquip et ut consequat adipisicing aute exercitation.', deadline: '2023-09-05T12:00:00Z', status: { id: '5', name: 'TODO' }, priority: { id: '5', name: 'HIGH', level: 1 } },
-	];
-	
+	const { time, open, statusId } = Route.useSearch();
+
+
+	const { data } = useQuery({
+		queryKey: ['tasks', username, time],
+		queryFn: async () => {
+			console.log('Fetching tasks...');
+			const { data } = await axios.get<SearchResults<TaskPrompt>>('/tasks', {
+				params: {
+					username,
+					every: true,
+					deadline: getDeadline(time),
+					past: time === 'past',
+				},
+			});
+			return data;
+		},
+	});
+
+	const tasks: Record<string, TaskPrompt[]> = {};
+	data?.results.forEach(task => {
+		if (!tasks[task.status.name]) {
+			tasks[task.status.name] = [];
+		}
+		tasks[task.status.name].push(task);
+	});
+
 	return (
 		<SideBar>
 			<MultiTaskList>
-				<TaskList title='To Do'>
-					<TaskCard task={tasks[0]} />
-					<TaskCard task={tasks[1]} />
-					<TaskCard task={tasks[2]} />
-					<TaskCard task={tasks[3]} />
-					<TaskCard task={tasks[4]} />
-					<TaskCard task={tasks[0]} />
-					<TaskCard task={tasks[1]} />
-					<TaskCard task={tasks[2]} />
-					<TaskCard task={tasks[3]} />
-					<TaskCard task={tasks[4]} />
-					<TaskCard task={tasks[0]} />
-					<TaskCard task={tasks[1]} />
-					<TaskCard task={tasks[2]} />
-					<TaskCard task={tasks[3]} />
-					<TaskCard task={tasks[4]} />
-				</TaskList>
-				<TaskList title='In PROGRESS'>
-					<TaskCard task={tasks[3]} />
-					<TaskCard task={tasks[4]} />
-				</TaskList>
+				{status.map((item) => (
+					<TaskList key={item.id} id={item.id} title={item.name}>
+						{tasks[item.name]?.map(task => (
+							<TaskCard key={task.id} task={task} />
+						))}
+					</TaskList>
+				))}
 			</MultiTaskList>
+			<TaskSheet open={open} statusId={statusId} />
 		</SideBar>
 	)
 }

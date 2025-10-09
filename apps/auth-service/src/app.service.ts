@@ -7,8 +7,9 @@ import bcrypt from 'bcrypt'
 import type { ConfigType } from '@nestjs/config';
 
 import { User } from './entities/User.entity';
-import { LoginUser, RegisterUser } from './validations';
 import { JwtRefresh } from './config';
+import { JwtPayload } from './types/JwtPayload';
+import { LoginUser, RegisterUser } from './validations';
 
 @Injectable()
 export class AuthService {
@@ -43,12 +44,17 @@ export class AuthService {
 		return { token, refreshToken };
 	}
 
-	async refresh(username: string) {
+	async refresh(token: string) {
+		const { sub: username } = this.jwtService.verify<JwtPayload>(token, this.refreshConfig);
+
 		const user = await this.userDB.findOneBy({ username });
 		if (!user) throw new RpcException('username: Username não encontrado');
 
 		const payload = { sub: username };
-		return this.jwtService.sign(payload);
+		const new_token = this.jwtService.sign(payload);
+		const refreshToken = this.jwtService.sign(payload, this.refreshConfig);
+
+		return { token: new_token, refreshToken };
 	}
 
 	async users() {

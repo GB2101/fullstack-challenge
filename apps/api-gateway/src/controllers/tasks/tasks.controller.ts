@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Param, Pos
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNoContentResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { ClientProxy } from '@nestjs/microservices';
 import { DEFAULTS, SERVICES } from 'src/utils/Constants';
-import { CreateTasks, UpdateTasks, Pagination, CreateTasksReq, UpdateTasksReq } from './validations';
+import { CreateTasks, UpdateTasks, Pagination, CreateTasksReq, UpdateTasksReq, SearchTasks } from './validations';
 import { CreateTaskResponse, SearchTaskResponse, TasksResponse } from './types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Proxy, ProxyOptions } from 'src/utils';
@@ -79,10 +79,11 @@ export class TasksController {
 	@Get()
 	@ApiOperation({summary: 'Lista as Tasks existentes'})
 	@ApiOkResponse({description: 'Lista de Tasks retornada', type: SearchTaskResponse})
-	async search(@Query() query: Pagination) {
+	async search(@Query() query: SearchTasks) {
 		console.log(`[API GATEWAY]: Search Tasks request`);
 
 		const data = {
+			...query,
 			page: query.page ?? DEFAULTS.SearchParams.page,
 			size: query.size ?? DEFAULTS.SearchParams.size,
 		};

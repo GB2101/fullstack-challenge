@@ -28,6 +28,6 @@ export class HistoryController {
 			code: HttpStatus.NOT_FOUND,
 		}
 
-		return this.tasksProxy.send<HistoryResponse, string>('history', id, option);
+		return this.tasksProxy.send<HistoryResponse, string>('history-list', id, option);
 	}
 }

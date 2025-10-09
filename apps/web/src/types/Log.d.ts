@@ -4,6 +4,6 @@ export type Log = {
 	id: string;
 	username: string;
 	timestamp: string;
-	before: Record<string, string>;
-	edition: Record<string, string>;
+	before: Record<string, string | string[] | { name: string }>;
+	edition: Record<string, string | string[] | { name: string }>;
 };

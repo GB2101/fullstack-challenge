@@ -95,7 +95,7 @@ export const Pagination: FC<PaginationProps> = (props) => {
 
 
 				<ItemPage 
-					page={10}
+					page={props.pages}
 					active={format.limits.end}
 					handleClick={changePage}
 				/>

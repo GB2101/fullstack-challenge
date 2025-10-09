@@ -16,15 +16,18 @@ export class DataSeeder implements Seeder {
 		const users = fs.readFileSync(path.join(__dirname, '../user-seed.log'), 'utf-8')
 			.split('\n')
 			.slice(0, 5); // take first 5 users
+		
 
 		const taskDB = dataSource.getRepository(Task);
 		const taskFactory = factoryManager.get(Task);
+
 		let tasks = await Promise.all(Array.from({length: 30}).map(async () => {
 			const task = await taskFactory.make({
 				status: faker.helpers.arrayElement(status),
 				priority: faker.helpers.arrayElement(priorities),
 				createdBy: faker.helpers.arrayElement(users),
 				editedBy: faker.helpers.arrayElement(users),
+				users: faker.helpers.arrayElements(users, {min: 1, max: 3}),
 			});
 			return task;
 		}));

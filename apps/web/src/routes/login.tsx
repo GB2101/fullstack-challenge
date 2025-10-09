@@ -1,10 +1,11 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { CircleAlert as Warning } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,20 +18,16 @@ import {
 	CardFooter,
 } from '@/components/ui/card'
 
-import { useAxios, type Error } from '@/hooks/useAxios'
-import { useAuthStore } from '@/stores'
 import { Active } from '@/components'
-import { useEffect } from 'react'
+import { useAuthStore } from '@/stores'
+import { useAxios } from '@/hooks/useAxios'
+import type { TokensResponse, Error } from '@/types'
 
 const loginSchema = z.object({
 	username: z.string().nonempty('Username é obrigatório'),
 	password: z.string().nonempty('Senha é obrigatório'),
 });
 type LoginInput = z.infer<typeof loginSchema>;
-type LoginResponse = { 
-	token: string,
-	refreshToken: string,
-};
 
 
 export const Route = createFileRoute('/login')({
@@ -44,9 +41,8 @@ function RouteComponent() {
 
 
 	useEffect(() => {
-		console.log(isAuthenticated);
 		if (isAuthenticated) {
-			navigate({ to: '/tasks' });
+			navigate({ to: '/tasks', search: { time: 'today' } });
 		}
 	}, [isAuthenticated, navigate]);
 
@@ -57,10 +53,10 @@ function RouteComponent() {
 
 	const onSubmit = async (input: LoginInput) => {
 		try {
-			const { data } = await axios.post<LoginResponse>('/auth/login', input);
-			setTokens(data.token, data.refreshToken);
+			const { data } = await axios.post<TokensResponse>('/auth/login', input);
+			setTokens(data);
 			setUsername(input.username);
-			navigate({ to: '/tasks' });
+			navigate({ to: '/tasks', search: { time: 'today' } });
 		} catch (err) {
 			const error = err as Error<LoginInput>;
 			if (!error.response) {

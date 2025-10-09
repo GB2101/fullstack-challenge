@@ -1,0 +1,56 @@
+@startuml
+class User {
+  username: string
+  email: string
+  password: string
+  creationDate: Date
+}
+
+class Task {
+  id: string
+  createdBy: string
+  editedBy: string
+  title: string
+  description: string
+  deadline: Date
+  creationDate: Date
+  users: string[]
+  priority: Priority
+  status: Status
+}
+
+class Comment {
+  id: number
+  username: string
+  comment: string
+  timestamp: Date
+  task: Task
+}
+
+class History {
+  id: number
+  username: string
+  timestamp: Date
+  before: DataValue
+  edition: DataValue
+  task: Task
+}
+
+class Priority {
+  id: number
+  name: string
+  level: number
+}
+
+class Status {
+  id: number
+  name: string
+}
+
+Task "1" -- "0..*" Comment : has
+Task "1" -- "0..*" History : has
+Task "1" -- "1" Priority : has
+Task "1" -- "1" Status : has
+Comment "0..*" -- "1" Task : belongs to
+History "0..*" -- "1" Task : belongs to
+@enduml

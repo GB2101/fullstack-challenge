@@ -18,12 +18,12 @@
 
 ### Notificações & Tempo Real
 
-- [ ] Ao **criar/atualizar/comentar** uma tarefa, **publicar evento** no broker (**RabbitMQ**).
-- [ ] Serviço de **notifications** consome da fila, **persiste** e **entrega via WebSocket**.
-- [ ] WebSocket notifica quando:
-    - [ ] a tarefa é atribuída ao usuário;
-    - [ ] o **status** da tarefa muda;
-    - [ ] há **novo comentário** em tarefa da qual participa.
+- [x] ~~Ao **criar/atualizar/comentar** uma tarefa, **publicar evento** no broker (**RabbitMQ**).~~ [09/10/2025]
+- [x] ~~Serviço de **notifications** consome da fila, **persiste** e **entrega via WebSocket**.~~ [09/10/2025]
+- [x] ~~WebSocket notifica quando:~~ [09/10/2025]
+    - [x] ~~a tarefa é atribuída ao usuário;~~ [09/10/2025]
+    - [x] ~~o **status** da tarefa muda;~~ [09/10/2025]
+    - [x] ~~há **novo comentário** em tarefa da qual participa.~~ [09/10/2025]
 
 ### Docker
 
@@ -52,9 +52,9 @@
 
 ### WebSocket Events
 
-- [ ] `task:created` – tarefa foi criada
-- [ ] `task:updated` – tarefa foi atualizada
-- [ ] `comment:new` – novo comentário
+- [x] ~~`task:created` – tarefa foi criada~~ [09/10/2025]
+- [x] ~~`task:updated` – tarefa foi atualizada~~ [09/10/2025]
+- [x] ~~`comment:new` – novo comentário~~ [09/10/2025]
 
 ---
 
@@ -62,18 +62,18 @@
 
 - [x] ~~**React.js** com **TanStack Router**.~~ [08/10/2025]
 - [x] ~~**UI:** mínimo 5 componentes com **shadcn/ui** + **Tailwind CSS**.~~ [08/10/2025]
-- [ ] **Páginas obrigatórias:**
+- [x] ~~**Páginas obrigatórias:**~~ [09/10/2025]
     - [x] ~~Login/Register com validação (Pode ser um modal)~~ [08/10/2025]
     - [x] ~~Lista de tarefas com filtros e busca~~ [08/10/2025]
     - [x] ~~Detalhe da tarefa com comentários~~ [08/10/2025]
-- [ ] **Estado:** Context API ou Zustand para auth.
-- [ ] **WebSocket:** conexão para notificações em tempo real.
-- [ ] **Validação:** `react-hook-form` + `zod`.
-- [ ] **Loading/Error:** Skeleton loaders (shimmer effect) e toast notifications.
+- [x] ~~**Estado:** Context API ou Zustand para auth.~~ [09/10/2025]
+- [x] ~~**WebSocket:** conexão para notificações em tempo real.~~ [09/10/2025]
+- [x] ~~**Validação:** `react-hook-form` + `zod`.~~ [09/10/2025]
+- [ ] Loading/Error: Skeleton loaders (shimmer effect) e toast notifications.
 
 #### **Diferencial:**
 
-- [ ] TanStack Query.
+- [x] ~~TanStack Query.~~ [09/10/2025]
 
 ---
 
@@ -83,8 +83,8 @@
 - [x] ~~**JWT** com Guards e estratégias Passport.~~ [04/10/2025]
 - [x] ~~**Swagger** completo no Gateway (`/api/docs`).~~ [05/10/2025]
 - [x] ~~**DTOs** com `class-validator` e `class-transformer`.~~ [04/10/2025]
-- [ ] **Microsserviços** Nest.js com **RabbitMQ**.
-- [ ] **WebSocket** Gateway para eventos real-time.
+- [x] ~~**Microsserviços** Nest.js com **RabbitMQ**.~~ [09/10/2025]
+- [x] ~~**WebSocket** Gateway para eventos real-time.~~ [09/10/2025]
 - [x] ~~**Migrations** com TypeORM.~~ [04/10/2025]
 - [x] ~~**Rate limiting** no API Gateway (10 req/seg).~~ [04/10/2025]
 

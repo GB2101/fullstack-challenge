@@ -37,8 +37,8 @@ services:
     depends_on:
       db:
         condition: service_started
-      # rabbitmq:
-        # condition: service_started
+      rabbitmq:
+        condition: service_started
     networks:
       - challenge-network
   
@@ -61,8 +61,8 @@ services:
     depends_on:
       db:
         condition: service_started
-      # rabbitmq:
-      #   condition: service_started
+      rabbitmq:
+        condition: service_started
     networks:
       - challenge-network
   
@@ -85,8 +85,32 @@ services:
     depends_on:
       db:
         condition: service_started
-    #   rabbitmq:
-    #     condition: service_started
+      rabbitmq:
+        condition: service_started
+    networks:
+      - challenge-network
+
+  notifications-service:
+    container_name: notifications-service
+    build:
+      context: .
+      dockerfile: ./apps/notifications-service/Dockerfile
+      target: development
+    ports:
+      - '3004:3004'
+    volumes:
+      - .:/app
+      - ./packages:/app/packages
+      - /app/node_modules
+      - /app/apps/notifications-service/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3004
+    depends_on:
+      db:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
     networks:
       - challenge-network
 
@@ -105,6 +129,21 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
       POSTGRES_DB: challenge_db
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq
+    attach: false
+    restart: always
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - challenge-network
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes: ['rabbitmq_data:/var/lib/rabbitmq']
 
 volumes:
   postgres_data:

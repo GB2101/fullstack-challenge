@@ -10,8 +10,7 @@ export class TasksController {
 	@MessagePattern('tasks-create')
 	async create(data: CreateTasks) {
 		console.log(`[TASKS SERVICE]: Create request ${data.task.title}`);
-		const created = await this.tasksService.create(data);
-		return { id: created.id };
+		return await this.tasksService.create(data);
 	}
 
 	@MessagePattern('tasks-delete')

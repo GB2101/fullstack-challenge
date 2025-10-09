@@ -43,4 +43,8 @@ export class CommentsService {
 			}
 		});
 	}
+
+	async deleteTaskComments(id: string) {
+		await this.commentDB.delete({ task: { id }});
+	}
 }

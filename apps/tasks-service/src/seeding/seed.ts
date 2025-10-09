@@ -9,7 +9,7 @@ const configService = new ConfigService();
 
 const options: DataSourceOptions & SeederOptions = {
 	type: 'postgres',
-	host: configService.get<string>('host'),
+	host: configService.get<string>('ip_address') || 'localhost',
 	port: parseInt(configService.get<string>('port') ?? '5432'),
 	username: configService.get<string>('user'),
 	password: configService.get<string>('password'),

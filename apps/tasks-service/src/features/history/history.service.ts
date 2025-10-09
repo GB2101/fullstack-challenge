@@ -53,4 +53,8 @@ export class HistoryService {
 		});
 		return history;
 	}
+
+	async deleteTaskHistory(id: string) {
+		await this.historyDB.delete({ task: { id }});
+	}
 }

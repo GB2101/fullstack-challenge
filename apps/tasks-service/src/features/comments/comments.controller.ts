@@ -10,8 +10,8 @@ export class CommentsController {
 	@MessagePattern('comments-create')
 	async create(data: CreateComment) {
 		console.log('[COMMENTS SERVICE]: Register Comment request');
-		const { id, timestamp } = await this.commentsService.create(data);
-		return { id, timestamp };
+		const { id, timestamp, username, task: {id: taskId, title: taskTitle, users}} = await this.commentsService.create(data);
+		return { id, timestamp, username, users, task: { id: taskId, title: taskTitle }};
 	}
 
 	@MessagePattern('comments-list')

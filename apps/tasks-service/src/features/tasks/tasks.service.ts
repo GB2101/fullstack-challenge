@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from 'src/entities';
 import { InfoService } from '../info/info.service';
 import { HistoryService } from '../history/history.service';
+import { CommentsService } from '../comments/comments.service';
 import { CreateTasks, UpdateTasks } from './validations';
 import { SearchTasks } from './validations/Search.dto';
 
@@ -13,6 +14,7 @@ export class TasksService {
 	constructor(
 		private readonly infoService: InfoService,
 		private readonly historyService: HistoryService,
+		private readonly commentService: CommentsService,
 		@InjectRepository(Task) private tasksDB: Repository<Task>,
 	) {}
 	
@@ -31,6 +33,11 @@ export class TasksService {
 	}
 	
 	async delete(id: string) {
+		await Promise.all([
+			this.historyService.deleteTaskHistory(id),
+			this.commentService.deleteTaskComments(id),
+		]);
+
 		await this.tasksDB.delete(id);
 		return id;
 	}

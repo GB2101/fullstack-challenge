@@ -8,7 +8,7 @@
 
 ## 🚀 Visão Geral
 
-Este projeto é um sistema full-stack para gestão colaborativa de tarefas, desenvolvido como parte do desafio para a vaga de Full-stack Developer Júnior na Jungle Gaming. O sistema utiliza monorepo, microserviços com NestJS, mensageria com RabbitMQ, autenticação JWT, e uma interface moderna com React, TanStack Router, shadcn/ui e Tailwind CSS.
+Este projeto é um sistema full-stack para gestão colaborativa de tarefas. O sistema utiliza monorepo, microserviços com NestJS, mensageria com RabbitMQ, autenticação JWT, e uma interface moderna com React, TanStack Router, shadcn/ui e Tailwind CSS.
 
 ## 🧱 Estrutura do Projeto
 
